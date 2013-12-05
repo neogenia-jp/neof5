@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C2D1619-E2B8-48BD-960E-9C37E10C78A0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Daifugo</RootNamespace>
+    <AssemblyName>Daifugo</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>&lt;Project Location In Database&gt;</SccProjectName>
+    <SccLocalPath>&lt;Local Binding Root of Project&gt;</SccLocalPath>
+    <SccAuxPath>&lt;Source Control Database&gt;</SccAuxPath>
+    <SccProvider>Mercurial Source Control Package</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bases\BaseGameContext.cs" />
+    <Compile Include="Bases\GameEvents.cs" />
+    <Compile Include="Bases\GameHistory.cs" />
+    <Compile Include="Bases\IGameObserver.cs" />
+    <Compile Include="Bases\IGameMonitor.cs" />
+    <Compile Include="Cards\Card.cs" />
+    <Compile Include="Cards\Suit.cs" />
+    <Compile Include="Cards\CardExtentions.cs" />
+    <Compile Include="Cards\DeckGenerator.cs" />
+    <Compile Include="GameImples\ContextFactory.cs" />
+    <Compile Include="Bases\CheckResult.cs" />
+    <Compile Include="Bases\IGameContext.cs" />
+    <Compile Include="Bases\IGamePlayer.cs" />
+    <Compile Include="GameImples\GameContext.cs" />
+    <Compile Include="GameImples\GameMaster.cs" />
+    <Compile Include="Observers\BasePlayer.cs" />
+    <Compile Include="Observers\BaseObserver.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Bases\IRule.cs" />
+    <Compile Include="Rules\KaidanRule.cs" />
+    <Compile Include="Rules\SimplestRule.cs" />
+    <Compile Include="GameImples\PlayerContext.cs" />
+    <Compile Include="Bases\PlayerTitle.cs" />
+    <Compile Include="Rules\RuleFactory.cs" />
+    <Compile Include="Utils\CollectionUtils.cs" />
+    <Compile Include="Bases\IPlayerContext.cs" />
+    <Compile Include="Observers\PoorPlayer.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
