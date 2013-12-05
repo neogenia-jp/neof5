@@ -5,6 +5,10 @@
 enchant();
 
 window.onload = function () {
+    // ============================== Variables ==============================
+    var gRoomid = document.getElementById('roomid').value;
+    var gPlayername = document.getElementById('name').value;
+    var gAutostart = document.getElementById('autostart').value;
 
     // ============================== Variables ==============================
 
@@ -550,16 +554,18 @@ window.onload = function () {
             startButton.x = GAME_W / 2;
             startButton.y = GAME_H / 2;
             //startButton.font = '28pt sans-serif';
-            startButton.ontouchend = function () {
+            startButton.ontouchend = function () { SendStart(); }
+            scene.addChild(startButton);
+           
+			// 開始処理
+            function SendStart() {
                 var obj = new Object();
                 obj.kind = 'Start';
 
                 var jsonString = JSON.stringify(obj);
                 socket.send(jsonString);
                 console.debug('send: ' + jsonString);
-            };
-            scene.addChild(startButton);
-            
+            }
 
             // 手番を表すマーク
             var tebanMark = new Sprite(INFOBOX_W, INFOBOX_H);
@@ -611,7 +617,7 @@ window.onload = function () {
 
             // Webソケット接続
             try {
-                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + '/player?name=' + myname);
+                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + '/play/A/' + gRoomid + '?name=' + gPlayername);
                 socket.onerror = onError;
                 socket.onopen = onOpen;
                 socket.onclose = onClose;
@@ -709,10 +715,15 @@ window.onload = function () {
                 }
             }
 
+            if (gAutostart) setTimeout(function () { SendStart(); }, 300);   // 自動スタート
             return scene;
         };
 
-        game_.replaceScene(titleScene());  // ゲームの_rootSceneをスタートシーンに置き換える
+        if (gPlayername && gRoomid) {
+        	game_.replaceScene(mainScene());
+        } else {
+        	game_.replaceScene(titleScene());
+        }
     }
 
     game_.start(); // ゲームをスタートさせます

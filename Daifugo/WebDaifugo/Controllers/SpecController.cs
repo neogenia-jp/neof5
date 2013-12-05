@@ -6,10 +6,10 @@ using System.Web.Mvc;
 
 namespace WebDaifugo.Controllers
 {
-    public class PlayroomController : Controller
+    public class SpecController : Controller
     {
         //
-        // GET: /Playroom/
+        // GET: /Spec/
 
         public ActionResult Index()
         {

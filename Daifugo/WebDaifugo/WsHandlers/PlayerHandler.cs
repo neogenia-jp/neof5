@@ -20,6 +20,7 @@ namespace WebDaifugo.WsHandlers
         private static WebSocketCollection AllClients = new WebSocketCollection();
 
         private string sessionId = null;
+        private string rule = null;
 
         private string playerName;
         private int playerNum = 0;
@@ -32,7 +33,15 @@ namespace WebDaifugo.WsHandlers
             
                 playerName = this.WebSocketContext.QueryString["name"];
                 sessionId = this.WebSocketContext.QueryString["sessionId"];
-                gm = GameMasterManager.GetOrCreate(sessionId);
+                rule = this.WebSocketContext.QueryString["rule"];
+                gm = GameMasterManager.GetOrCreate(sessionId, rule);
+                if (gm.IsPlaing)
+                {
+					// すでにプレイ中なら切断する
+                    this.Close();
+                    return;
+                }
+
                 playerNum = gm.NumOfPlayers;
                 gm.AddPlayer(this);
 

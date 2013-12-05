@@ -15,7 +15,7 @@ namespace WebDaifugo
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.Add(new Route("monitor", new WsRouteHandler<MoniterHandler>()));
-            routes.Add(new Route("player", new WsRouteHandler<PlayerHandler>()));
+            routes.Add(new Route("play/{rule}/{id}", new WsRouteHandler<PlayerHandler>()));
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

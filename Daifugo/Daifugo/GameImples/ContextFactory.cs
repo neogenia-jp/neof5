@@ -15,8 +15,8 @@ namespace Daifugo.GameImples
             return new GameMaster(ctx as GameContext);
         }
 
-        public static IGameContext CreateGameContext() {
-            return new GameContext(RuleFactory.GetDefaultRule());
+        public static IGameContext CreateGameContext(int rule=0) {
+            return new GameContext(rule == 0 ? new SimplestRule() : new KaidanRule());
         }
 
         public static IPlayerContext CreatePlayerContext(IGamePlayer p, IGameContext ctx) {

@@ -10,14 +10,14 @@ namespace WebDaifugo.WsHandlers
     {
         private static Dictionary<string, GameMaster> pool = new Dictionary<string, GameMaster>();
 
-        public static GameMaster GetOrCreate(string sessionId)
+        public static GameMaster GetOrCreate(string sessionId, string rule="A")
         {
             lock (pool)
             {
                 sessionId = sessionId ?? "0";
                 if (!pool.ContainsKey(sessionId))
                 {
-                    var ctx = ContextFactory.CreateGameContext();
+                    var ctx = ContextFactory.CreateGameContext(rule=="A"?0:1);
                     var gm = ContextFactory.CreateGameMaster(ctx);
                     gm.wait_msec = 800;
                     pool[sessionId] = gm;
@@ -38,5 +38,13 @@ namespace WebDaifugo.WsHandlers
                 }
             }
         }
+
+        public static string MakeTempSession()
+        {
+            int sessionId = 10000;
+            while (pool.Keys.Contains("" + sessionId)) sessionId++;
+            return "" + sessionId;
+        }
+
     }
 }

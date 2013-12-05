@@ -22,6 +22,7 @@ namespace Daifugo.GameImples
 
         readonly List<IGameMonitor> observers = new List<IGameMonitor>();
         readonly IMonitorContext monitorCtx = null;
+        public bool IsPlaing { get; private set; }
 
         //GameEvents eventTable = new GameEvents();
 
@@ -33,6 +34,7 @@ namespace Daifugo.GameImples
         {
             this.context = context;
             monitorCtx = new BaseMonitorContext(context, _getAllDeck);
+            IsPlaing = false;
         }
 
         /// <summary>
@@ -81,6 +83,7 @@ namespace Daifugo.GameImples
 
         public void Start()
         {
+            IsPlaing = true;
             context.Reset();
             foreach (var c in playerContexts.Values) c.Reset();
 
@@ -368,6 +371,8 @@ namespace Daifugo.GameImples
                     //_broadcast((evt, f) => evt.Finish(f));
                     Finish(_getContext);
                     //context._players.ForEach(p => p.Finish(playerContexts[p]));
+
+                    IsPlaing = false;
                 }
                 else
                 {
