@@ -11,6 +11,7 @@ using Daifugo.Bases;
 using Daifugo.GameImples;
 using System.Diagnostics;
 using Daifugo.Players;
+using System.Text.RegularExpressions;
 
 namespace WebDaifugo.WsHandlers
 {
@@ -32,15 +33,18 @@ namespace WebDaifugo.WsHandlers
                 AllClients.Add(this);
             
                 playerName = this.WebSocketContext.QueryString["name"];
-                sessionId = this.WebSocketContext.QueryString["sessionId"];
-                rule = this.WebSocketContext.QueryString["rule"];
-                gm = GameMasterManager.GetOrCreate(sessionId, rule);
-                if (gm.IsPlaing)
+
+                var mc = Regex.Matches(this.WebSocketContext.RequestUri.OriginalString, @"/play/(A|B)/(\d*)\?");
+                if (mc.Count > 0)
                 {
-					// すでにプレイ中なら切断する
-                    this.Close();
-                    return;
+                    rule = mc[0].Groups[1].Success ? mc[0].Groups[1].Value.ToString() : "A";
+                    sessionId = mc[0].Groups[2].Success ? mc[0].Groups[2].Value.ToString() : "1";
                 }
+
+                gm = GameMasterManager.GetOrCreate(sessionId, rule);
+
+				// すでにプレイ中なら切断する
+                if (gm==null || gm.IsPlaing) { this.Close(); return; }
 
                 playerNum = gm.NumOfPlayers;
                 gm.AddPlayer(this);

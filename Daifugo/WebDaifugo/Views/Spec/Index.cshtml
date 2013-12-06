@@ -2,6 +2,16 @@
     ViewBag.Title = "プログラム仕様";
 }
 @Html.Partial("_HeaderNav")
+
+@section Scripts{
+	<script src="/Content/syntaxhighlighter_3.0.83/shCore.js"></script>
+	<script src="/Content/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+}
+@section Css{
+    <link href="/Content/syntaxhighlighter_3.0.83/shCore.css" rel="stylesheet">
+    <link href="/Content/syntaxhighlighter_3.0.83/shThemeDefault.css" rel="stylesheet">
+}
 <div class="container">
     <h2>@ViewBag.Title</h2>
     <h3>概要</h3>
@@ -21,7 +31,7 @@
     <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
             <p>
-                接続URL
+                <strong>接続URL:</strong>
 				<pre>ws://neofugo1.neogenia.co.jp:80/play/{A|B}/{RoomID}?name={ProgramName}</pre>
                 WebSocketにて上記URLに接続してください。
             </p>
@@ -31,8 +41,10 @@
                 <li>{ProgramName}のところは、プログラムの名前をURLエンコードして渡してください。</li>
                 <li class="text-dainger">ホスト名およびポート番号は、大会当日に専用のホストが発表されますので、変更可能なようにしておいて下さい。</li>
             </ul>
-            例： JavaScript で接続する場合（クラスＡ、RoomID=12345）
-			<pre>var socket = new WebSocket('ws://neofugo1.neogenia.co.jp:80/play/A/12345?name=Hogehoge');</pre>
+            例： JavaScript で接続する場合（クラスＡ、RoomID=123）
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+				var s = new WebSocket('ws://neofugo1.neogenia.co.jp:80/play/A/123?name=Hogehoge');
+			]]></script>
         </div>
     </div>
 
@@ -44,7 +56,7 @@
 				データは JSON 形式で送受信します。1回の送受信データ（1回のOnMessage着信）で1つのメッセージが完結しています。1つのメッセージが複数回に分けて送信されることはありません。
 				メッセージの内容は、たとえば以下のような形式です。
             </p>
-            <pre>
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
 {
 	"YourNum":0,                                // 受信者の番号（接続順に0から振られます）
 	"Kind":"ProcessTurn",                       // ゲーム内で起こったイベントの種類
@@ -61,11 +73,18 @@
 	"Yama":"",                                   // 山にあるカード（流れたカード）
 	"History":"2-[S3] 3-[D5] 4-[S6]"             // ゲームの初手から現在局面までの手の全履歴
 }
-			</pre>
+			]]></script>
             <p>
                 ゲーム内で何か進展があると、その種類に応じてデータが送られてきますが、すべてに応答する必要はありません。
 				応答が必要なのは自分の手番が回ってきたときだけです。
             </p>
+        </div>
+    </div>
+
+    <h3>カードの表し方</h3>
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            <p>～～～執筆中～～～</p>
         </div>
     </div>
 

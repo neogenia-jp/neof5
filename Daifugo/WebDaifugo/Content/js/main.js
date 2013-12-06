@@ -8,6 +8,7 @@ window.onload = function () {
     // ============================== Variables ==============================
     var gRoomid = document.getElementById('roomid').value;
     var gPlayername = document.getElementById('name').value;
+    var gRule = document.getElementById('rule').value;
     var gAutostart = document.getElementById('autostart').value;
 
     // ============================== Variables ==============================
@@ -617,7 +618,7 @@ window.onload = function () {
 
             // Webソケット接続
             try {
-                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + '/play/A/' + gRoomid + '?name=' + gPlayername);
+                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + '/play/' + gRule + '/' + gRoomid + '?name=' + gPlayername);
                 socket.onerror = onError;
                 socket.onopen = onOpen;
                 socket.onclose = onClose;
@@ -625,8 +626,8 @@ window.onload = function () {
             } catch (e) { alert(e.message); }
 
             // Webソケットハンドラ
-            function onOpen(evt) { console.debug('connected.'); $('#aa').fadeIn(); $('#connectBtn').attr('disabled', 'disabled'); }
-            function onClose(evt) { console.debug('closed.'); $('#aa').fadeOut(); $('#connectBtn').removeAttr('disabled'); }
+            function onOpen(evt) { console.debug('connected.'); }
+            function onClose(evt) { console.debug('closed.'); }
             function onError(evt) { console.error('websocket error! '); }
             function onMessage(evt) {
                 console.debug("receive data=%O", evt.data);

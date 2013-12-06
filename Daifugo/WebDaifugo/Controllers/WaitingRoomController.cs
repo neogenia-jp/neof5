@@ -27,7 +27,7 @@ namespace WebDaifugo.Controllers
             return View();
         }
 
-        public ActionResult Start(string id, string name)
+        public ActionResult Start(string id, string name, string rule)
         {
             if (id == null)
             {
@@ -37,6 +37,7 @@ namespace WebDaifugo.Controllers
 
             ViewBag.RoomId = id;
             ViewBag.Name = name;
+            ViewBag.Rule = rule;
 
             return View();
         }
