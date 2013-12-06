@@ -2,24 +2,21 @@
     ViewBag.Title = "クイックプレイ";
 }
 @Html.Partial("_HeaderNav")
+<div class="container">
 
-<div class="row">
-    <div class="col-sm-10 col-sm-offset-1">
-
-        <div class="jumbotron">
-            <h1>@ViewBag.Title</h1>
-            <p>
-                ここでは、実際にオンラインでコンピュータと対戦することができます。あなた vs サンプルプログラム4人 での対戦となります。<br />
-                実際にプレイして大会ルールの確認や、開発者コンソールを開くことでマスタープログラムとの通信ログを確認できますので、プロトコルの確認にも活用できます。<br />
-				もちろん、一般の方でもプレイしていただけます。<br />
-				プレイするには、WebSocketに対応したブラウザである必要があります。
-            </p>
-            <p id="ok" style="display:none">
-				<button class="btn btn-success btn-lg" role="button" id="btnA">対戦する（クラスＡルール）</button>
-				<button class="btn btn-danger btn-lg" role="button" id="btnB">対戦する（クラスＢルール）</button>
-            </p>
-			<p id="ng" style="display:none" class="danger">ご利用のブラウザは WebSocket 対応でないたプレイ出来ません。</p>
-        </div>
+    <div class="jumbotron">
+        <h1>@ViewBag.Title</h1>
+        <p>
+            ここでは、実際にオンラインでコンピュータと対戦することができます。あなた vs サンプルプログラム4人 での対戦となります。<br />
+            実際にプレイして大会ルールの確認や、開発者コンソールを開くことでマスタープログラムとの通信ログを確認できますので、プロトコルの確認にも活用できます。<br />
+            もちろん、一般の方でもプレイしていただけます。<br />
+            プレイするには、WebSocketに対応したブラウザである必要があります。
+        </p>
+        <p id="ok" style="display: none">
+            <button class="btn btn-success btn-lg" role="button" id="btnA">対戦する（クラスＡルール）</button>
+            <button class="btn btn-danger btn-lg" role="button" id="btnB">対戦する（クラスＢルール）</button>
+        </p>
+        <p id="ng" style="display: none" class="danger">ご利用のブラウザは WebSocket 対応でないたプレイ出来ません。</p>
     </div>
 </div>
 
