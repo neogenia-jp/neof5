@@ -1,14 +1,35 @@
 ﻿@{
     ViewBag.Title = "ネオ富豪";
 }
-@Html.Partial("_HeaderNav")
 <div class="container">
     <div class="jumbotron">
-        <h1>ネオ富豪</h1>
+        <h1>ネオ富豪とは</h1>
         <p>
-            コンピュータ大富豪大会「ネオ富豪」の公式サイトです。現在制作中です。<br />
-            ただいま、オンラインでコンピュータと対戦できる「クイックプレイ」がお試しいただけます。
+            トランプゲーム「大富豪」をネットワーク対戦するのためのマスタサーバです。<br />
+            実際にプレイするには、WebSocketに対応したブラウザである必要があります。
         </p>
-        <p><a class="btn btn-primary btn-lg" role="button" href="/waitingroom/quickplay">クイックプレイ</a></p>
+        <p id="ok" style="display: none">
+            <button class="btn btn-primary btn-lg" role="button" id="btnB">クイックプレイ</button>
+        </p>
+        <p id="ng" style="display: none" class="danger">ご利用のブラウザは WebSocket 対応でないたプレイ出来ません。</p>
     </div>
 </div>
+
+@section Scripts{
+<script type="text/javascript">
+	$(function () {
+		if (!WebSocket) {
+			$('#ng').fadeIn();
+			alert('NG');
+		} else {
+			$('#ok').fadeIn();
+		}
+	});
+	
+	function startNewWindow(rule,name) {
+		window.open('quickplay/'+rule+'/?name='+name, '_blank', 'width=800,height=441,scrollbars=auto,resizable=yes');  
+	}
+
+	$('#btnB').click(function () { startNewWindow('B', 'あなた'); });
+</script>
+}

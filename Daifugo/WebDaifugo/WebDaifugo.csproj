@@ -34,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <PublishDatabases>true</PublishDatabases>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -201,8 +202,9 @@
     <Content Include="Content\syntaxhighlighter_3.0.83\shThemeMidnight.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <None Include="Properties\PublishProfiles\neofugo1.cloudapp.net.pubxml" />
     <Content Include="Content\bootstrap\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\neof5master - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\neof5master - Web Deploy.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
@@ -226,14 +228,10 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Entry\Index.cshtml" />
-    <Content Include="Views\Rule\Index.cshtml" />
-    <Content Include="Views\Shared\_HeaderNav.cshtml" />
-    <Content Include="Views\Spec\Index.cshtml" />
     <Content Include="Views\WaitingRoom\Index.cshtml" />
-    <Content Include="Views\WaitingRoom\Start.cshtml" />
     <Content Include="Views\WaitingRoom\QuickPlay.cshtml" />
     <Content Include="Views\WaitingRoom\TestPlay.cshtml" />
+    <Content Include="Views\Home\QuickPlay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
