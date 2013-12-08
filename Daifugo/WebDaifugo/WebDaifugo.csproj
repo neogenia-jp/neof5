@@ -132,11 +132,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\EntryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\RuleController.cs" />
     <Compile Include="Controllers\WaitingRoomController.cs" />
-    <Compile Include="Controllers\SpecController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -231,7 +228,7 @@
     <Content Include="Views\WaitingRoom\Index.cshtml" />
     <Content Include="Views\WaitingRoom\QuickPlay.cshtml" />
     <Content Include="Views\WaitingRoom\TestPlay.cshtml" />
-    <Content Include="Views\Home\QuickPlay.cshtml" />
+    <Content Include="Views\Home\Entry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
