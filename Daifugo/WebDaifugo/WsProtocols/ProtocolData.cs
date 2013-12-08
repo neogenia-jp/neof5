@@ -26,7 +26,7 @@ namespace WebDaifugo.WsProtocols
                 Deck = ctx.Deck.ToCardsetString(),
                 Ba = ctx.GameContext.Ba.Select(cards => cards.ToCardsetString()),
                 Yama = ctx.GameContext.Yama.JoinString(" "),
-                History = ctx.GameContext.History.JoinString(),
+                History = ctx.GameContext.History.Select(gh=>gh.ToString()),
             };
         }
 

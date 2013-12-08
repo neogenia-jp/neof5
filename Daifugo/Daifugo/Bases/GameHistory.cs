@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Daifugo.Bases
 {
-    // ========== base classies ==========
+    // ========== base classes ==========
 
     public abstract class GameHistoryEntity
     {
