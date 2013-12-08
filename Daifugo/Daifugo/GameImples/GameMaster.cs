@@ -241,155 +241,158 @@ namespace Daifugo.GameImples
 
         public ICheckResult PutCards(IGamePlayer player, IEnumerable<Card> cards)
         {
-            Debug.WriteLine("GameMaster::PutCards [{0}] cards={1}", player.Name, cards == null ? "PASS" : cards.ToCardsetString());
-
-            // プレイヤーの手番かどうかをチェック
-            if (player != context.GetCurrentPlayer())
+            lock (context)
             {
-                return new CheckError("手番が違います。");
-            }
+                Debug.WriteLine("GameMaster::PutCards [{0}] cards={1}", player.Name, cards == null ? "PASS" : cards.ToCardsetString());
 
-            var pcontext = playerContexts[player];
-            var nextTeban = _getNextTeban();
-
-            // パス？
-            if (cards == null || !cards.Any())
-            {
-                if (context.Ba.Count() == 0)
+                // プレイヤーの手番かどうかをチェック
+                if (player != context.GetCurrentPlayer())
                 {
-                    // 親なのにパスはだめ。
-                    return new CheckError("親なのでパスできません。");
+                    return new CheckError("手番が違います。");
                 }
 
-                // ヒストリー記録
-                context._history.Add(new HE_Pass(context.Teban));
+                var pcontext = playerContexts[player];
+                var nextTeban = _getNextTeban();
 
-                // カード配置通知
-                //_broadcast((evt, f) => evt.CardsArePut(f));
-                CardsArePut(_getContext);
-                //context._players.ForEach(p => p.CardsArePut(playerContexts[p]));
-
-                // 全員パス？
-                if (_isAllPass())
+                // パス？
+                if (cards == null || !cards.Any())
                 {
-                 //   context.DoNagare();
-                    context._history.Add(new HE_Nagare());
-                    //foreach (var pc in playerContexts.Values) pc.LastIsPass = false;
+                    if (context.Ba.Count() == 0)
+                    {
+                        // 親なのにパスはだめ。
+                        return new CheckError("親なのでパスできません。");
+                    }
 
-                    //RunAsyncLater(() =>
-                    //{
+                    // ヒストリー記録
+                    context._history.Add(new HE_Pass(context.Teban));
+
+                    // カード配置通知
+                    //_broadcast((evt, f) => evt.CardsArePut(f));
+                    CardsArePut(_getContext);
+                    //context._players.ForEach(p => p.CardsArePut(playerContexts[p]));
+
+                    // 全員パス？
+                    if (_isAllPass())
+                    {
+                        //   context.DoNagare();
+                        context._history.Add(new HE_Nagare());
+                        //foreach (var pc in playerContexts.Values) pc.LastIsPass = false;
+
+                        //RunAsyncLater(() =>
+                        //{
                         // 流れ通知
-                    _wait();
-                    //_broadcast((evt, f) => evt.Nagare(f));
-                    Nagare(_getContext);
+                        _wait();
+                        //_broadcast((evt, f) => evt.Nagare(f));
+                        Nagare(_getContext);
                         //context._players.ForEach(p => p.Nagare(playerContexts[p]));
 
-                    //    // 次の人の手をまつ
-                    //    context.Teban = context.LastPutPlayerNum;
-                    //    var px = context.GetCurrentPlayer();
-                    //    px.ProcessTurn(playerContexts[px]);
-                    //});
-                }
-            }
-            else
-            {
-
-                // パスでなければ持っているカードかチェック
-                if (!cards.Any(c => pcontext._deck.Contains(c)))
-                {
-                    return new CheckError("手札にないカードを出そうとしています。");
-                }
-
-                // さらに出せるカードかどうかチェック
-                var ret = context.Rule.CheckPutCards(context, cards);
-                if (!(ret is CheckOK)) return ret;
-
-                // カード移動
-                foreach (var c in cards) pcontext._deck.Remove(c);
-                //context._ba.Add(cards.ToArray());
-                context._history.Add(new HE_PutCards(context.Teban, cards));
-                //context.LastPutPlayerNum = context.Teban;
-            
-                // カード配置通知
-                //_broadcast((evt, f) => evt.CardsArePut(f));
-                CardsArePut(_getContext);
-                //context._players.ForEach(p => p.CardsArePut(playerContexts[p]));
-
-
-                // 革命判定
-                if (cards != null && cards.Count() >= 4)
-                {
-                    context.IsKakumei = !context.IsKakumei;
-                    _wait();
-                    //_broadcast((evt, f) => evt.Kakumei(f));
-                    Kakumei(_getContext);
-                    //context._players.ForEach(p => p.Kakumei(playerContexts[p]));
-                }
-            }
-
-            // 以降は別スレッドで実行
-            RunAsyncLater(() =>
-            {
-
-                // 手札がなくなった？
-                if (pcontext._deck.Count == 0)
-                {
-                    // あがりカード判定
-                    var ret = context.Rule.CanAgari(context, cards);
-                    if (ret is CheckOK)
-                    {
-                        int order = 1;
-                        while (order <= playerContexts.Count && playerContexts.Values.Any(pc => pc.OrderOfFinish == order)) order++;
-                        pcontext.OrderOfFinish = order;
+                        //    // 次の人の手をまつ
+                        //    context.Teban = context.LastPutPlayerNum;
+                        //    var px = context.GetCurrentPlayer();
+                        //    px.ProcessTurn(playerContexts[px]);
+                        //});
                     }
-                    else
-                    {
-                        int order = playerContexts.Count;
-                        while (order >= 1 && playerContexts.Values.Any(pc => pc.OrderOfFinish == order)) order--;
-                        pcontext.OrderOfFinish = order;
-                    }
-                    // あがり通知
-                    //_broadcast((evt, f) => evt.Agari(f));
-                    Agari(_getContext);
-                    //context._players.ForEach(p => p.Agari(playerContexts[p]));
-                }
-
-                // 残り1人？
-                var cardHavingPlayers = playerContexts.Values.Where(pc => pc._deck.Any());
-                if (cardHavingPlayers.Count() <= 1)
-                {
-                    // 最後の人の順位を設定
-                    int order = 1;
-                    while (order <= playerContexts.Count && playerContexts.Values.Any(pc => pc.OrderOfFinish == order)) order++;
-                    cardHavingPlayers.First().OrderOfFinish = order;
-
-                    // 階級を決める
-                    var pcorder = playerContexts.Values.OrderBy(p => p.OrderOfFinish < 1 ? int.MaxValue :p.OrderOfFinish).ToArray();
-                    _setRanking(pcorder);
-
-                    // 決着通知
-                    //_broadcast((evt, f) => evt.Finish(f));
-                    Finish(_getContext);
-                    //context._players.ForEach(p => p.Finish(playerContexts[p]));
-
-                    IsPlaing = false;
                 }
                 else
                 {
-                    // 手番を進める
-                    do
+
+                    // パスでなければ持っているカードかチェック
+                    if (!cards.Any(c => pcontext._deck.Contains(c)))
                     {
-                        context.Teban++;
-                    } while (playerContexts[context._players[context.Teban]]._deck.Count <= 0);
-                    //_broadcast((evt, f) => evt.Thinking(f));
-                    Thinking(_getContext);
-                    var pxc = context.GetCurrentPlayer();
-                    //context._players.ForEach(px => {if(px!=pxc) px.Thinking(playerContexts[px]);});
-                    pxc.ProcessTurn(playerContexts[pxc]);
+                        return new CheckError("手札にないカードを出そうとしています。");
+                    }
+
+                    // さらに出せるカードかどうかチェック
+                    var ret = context.Rule.CheckPutCards(context, cards);
+                    if (!(ret is CheckOK)) return ret;
+
+                    // カード移動
+                    foreach (var c in cards) pcontext._deck.Remove(c);
+                    //context._ba.Add(cards.ToArray());
+                    context._history.Add(new HE_PutCards(context.Teban, cards));
+                    //context.LastPutPlayerNum = context.Teban;
+
+                    // カード配置通知
+                    //_broadcast((evt, f) => evt.CardsArePut(f));
+                    CardsArePut(_getContext);
+                    //context._players.ForEach(p => p.CardsArePut(playerContexts[p]));
+
+
+                    // 革命判定
+                    if (cards != null && cards.Count() >= 4)
+                    {
+                        context.IsKakumei = !context.IsKakumei;
+                        _wait();
+                        //_broadcast((evt, f) => evt.Kakumei(f));
+                        Kakumei(_getContext);
+                        //context._players.ForEach(p => p.Kakumei(playerContexts[p]));
+                    }
                 }
-            });
-            return CheckResults.Ok;
-        }
+
+                // 以降は別スレッドで実行
+                RunAsyncLater(() =>
+                {
+
+                    // 手札がなくなった？
+                    if (pcontext._deck.Count == 0)
+                    {
+                        // あがりカード判定
+                        var ret = context.Rule.CanAgari(context, cards);
+                        if (ret is CheckOK)
+                        {
+                            int order = 1;
+                            while (order <= playerContexts.Count && playerContexts.Values.Any(pc => pc.OrderOfFinish == order)) order++;
+                            pcontext.OrderOfFinish = order;
+                        }
+                        else
+                        {
+                            int order = playerContexts.Count;
+                            while (order >= 1 && playerContexts.Values.Any(pc => pc.OrderOfFinish == order)) order--;
+                            pcontext.OrderOfFinish = order;
+                        }
+                        // あがり通知
+                        //_broadcast((evt, f) => evt.Agari(f));
+                        Agari(_getContext);
+                        //context._players.ForEach(p => p.Agari(playerContexts[p]));
+                    }
+
+                    // 残り1人？
+                    var cardHavingPlayers = playerContexts.Values.Where(pc => pc._deck.Any());
+                    if (cardHavingPlayers.Count() <= 1)
+                    {
+                        // 最後の人の順位を設定
+                        int order = 1;
+                        while (order <= playerContexts.Count && playerContexts.Values.Any(pc => pc.OrderOfFinish == order)) order++;
+                        cardHavingPlayers.First().OrderOfFinish = order;
+
+                        // 階級を決める
+                        var pcorder = playerContexts.Values.OrderBy(p => p.OrderOfFinish < 1 ? int.MaxValue : p.OrderOfFinish).ToArray();
+                        _setRanking(pcorder);
+
+                        // 決着通知
+                        //_broadcast((evt, f) => evt.Finish(f));
+                        Finish(_getContext);
+                        //context._players.ForEach(p => p.Finish(playerContexts[p]));
+
+                        IsPlaing = false;
+                    }
+                    else
+                    {
+                        // 手番を進める
+                        do
+                        {
+                            context.Teban++;
+                        } while (playerContexts[context._players[context.Teban]]._deck.Count <= 0);
+                        //_broadcast((evt, f) => evt.Thinking(f));
+                        Thinking(_getContext);
+                        var pxc = context.GetCurrentPlayer();
+                        //context._players.ForEach(px => {if(px!=pxc) px.Thinking(playerContexts[px]);});
+                        pxc.ProcessTurn(playerContexts[pxc]);
+                    }
+                });
+                return CheckResults.Ok;
+            }
+        } 
 
         internal int _getNextTeban()
         {

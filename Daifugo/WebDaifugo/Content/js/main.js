@@ -561,7 +561,7 @@ window.onload = function () {
 			// 開始処理
             function SendStart() {
                 var obj = new Object();
-                obj.kind = 'Start';
+                obj.Kind = 'Start';
 
                 var jsonString = JSON.stringify(obj);
                 socket.send(jsonString);
@@ -698,8 +698,8 @@ window.onload = function () {
                         okbutton.ontouchend = function () {
                             var selCards = mydeck.getSelectedCards();
                             var obj = new Object();
-                            obj.kind = 'Put';
-                            obj.cards = selCards.join(' ');
+                            obj.Kind = 'Put';
+                            obj.Cards = selCards.join(' ');
                             var jsonString = JSON.stringify(obj);
                             socket.send(jsonString);
                             console.debug('send: ' + jsonString);

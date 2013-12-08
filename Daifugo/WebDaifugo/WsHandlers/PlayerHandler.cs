@@ -78,32 +78,51 @@ namespace WebDaifugo.WsHandlers
 
             try
             {
-                var kind = jsonObj["kind"].ToString();
-                if (kind == "Chat")
-                {
-                    AllClients.Broadcast(jsonObj.ToString());
-                }
-                else if (kind == "Start")
-                {
-                        // 自動的に不足人数を追加してゲーム開始する
-                        var limit = 5 - gm.NumOfPlayers;
-                        for (int i = 1; i <= limit; i++)
-                        {
-                            gm.AddPlayer(PoorPlayer.Create("COM" + i, gm));
-                        }
-                        gm.Start();
-                }
-                else if (kind == "Put")
-                {
-                    var ret = gm.PutCards(this, DeckGenerator.FromCardsetString(jsonObj["cards"].ToString()));
-                    if (!(ret is CheckOK)) Send(new ProtocolData(ret));
-                }
+                var pd = ProcMessage(jsonObj);
+                if (pd != null) Send(pd);
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
                 Send(new ProtocolData(e));
             }
+        }
+
+        private ProtocolData ProcMessage(JObject jsonObj)
+        {
+            string kind = null;
+
+            try
+            {
+                kind = jsonObj["Kind"].ToString();
+            }
+            catch (Exception)
+            {
+                throw new InvalidOperationException("Kindがありません");
+            }
+
+            if (kind == "Tweet")
+            {
+                jsonObj["PlayerNum"] = playerNum;
+                AllClients.Broadcast(jsonObj.ToString());
+            }
+            else if (kind == "Start")
+            {
+                // 自動的に不足人数を追加してゲーム開始する
+                var limit = 5 - gm.NumOfPlayers;
+                for (int i = 1; i <= limit; i++)
+                {
+                    gm.AddPlayer(PoorPlayer.Create("COM" + i, gm));
+                }
+                gm.Start();
+            }
+            else if (kind == "Put")
+            {
+                var ret = gm.PutCards(this, DeckGenerator.FromCardsetString(jsonObj["Cards"].ToString()));
+                if (!(ret is CheckOK)) return new ProtocolData(ret);
+                myTimer.Enabled = false;
+            }
+            return null;
         }
 
         internal void Send(ProtocolData wsp)
@@ -131,9 +150,30 @@ namespace WebDaifugo.WsHandlers
         public void ProcessTurn(IPlayerContext ctx)
         {
             Send(new WsProtocols.ProtocolData(playerNum, "ProcessTurn", ctx));
+
+			// タイマースタート
+            _startTimer(10000);
         }
 
-        public void CardsArePut(IPlayerContext ctx)
+        private System.Timers.Timer myTimer;
+        private void _startTimer(int time)
+        {
+            if (myTimer == null)
+            {
+                myTimer = new System.Timers.Timer();
+                myTimer.AutoReset = false;
+                myTimer.Interval = time;
+                myTimer.Elapsed += OnTimer;
+            }
+            myTimer.Enabled = true;
+        }
+
+        public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
+        {
+			gm.PutCards(this, DeckGenerator.FromCardsetString(""));
+        }
+
+        void CardsArePut(IPlayerContext ctx)
         {
             Send(new WsProtocols.ProtocolData(playerNum, "CardsArePut", ctx));
         }
