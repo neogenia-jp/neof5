@@ -155,6 +155,7 @@
     <Content Include="Content\imgs\chara1.png" />
     <Content Include="Content\imgs\dialog.png" />
     <Content Include="Content\imgs\font0.png" />
+    <Content Include="Content\imgs\fork_me_on_bitbucket.png" />
     <Content Include="Content\imgs\gameover.png" />
     <Content Include="Content\imgs\icon0.png" />
     <Content Include="Content\imgs\iconMenuBg.png" />

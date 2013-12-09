@@ -1,4 +1,15 @@
 ﻿body {
     margin:0;
-	padding-top: 70px;
+	padding-top: 30px;
 }
+
+.fork-me-on-bitbucket {
+    background: url("/Content/imgs/fork_me_on_bitbucket.png") center;
+    background-size: 100% 100%;
+	width: 105px;
+	height: 105px;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+}
+

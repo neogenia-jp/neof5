@@ -152,7 +152,7 @@ namespace WebDaifugo.WsHandlers
             Send(new WsProtocols.ProtocolData(playerNum, "ProcessTurn", ctx));
 
 			// タイマースタート
-            _startTimer(10000);
+            _startTimer(30*1000);
         }
 
         private System.Timers.Timer myTimer;
