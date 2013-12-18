@@ -19,12 +19,10 @@ window.onload = function () {
 
     var DECK_CARD_W = 36;
     //var DECK_CARD_H = 100;
-    var DECK_W = 260;
+    var DECK_W = 240;
     var DECK_H = 90;
-    var MYDECK_W = 570;
-    var MYDECK_H = 130;
-    var MYDECK_X = 115;
-    var MYDECK_Y = GAME_H - DECK_H;
+    var MYDECK_W = 400;
+    var MYDECK_H = 108;
 
     var INFOBOX_W = 64;
     var INFOBOX_H = 64;
@@ -80,7 +78,8 @@ window.onload = function () {
             if (!this.scene) return;
             if (!this._surface) {
                 this._boxSprite = new Sprite(this.width, this.height);
-                this.scene.addChild(this._boxSprite);
+                //this.scene.addChild(this._boxSprite);
+                this.scene.insertBefore(this._boxSprite, this);
                 this._boxSprite.x = this.x;
                 this._boxSprite.y = this.y;
                 this._surface = new Surface(this.width, this.height);
@@ -95,12 +94,12 @@ window.onload = function () {
          * カードスプライト
          */
         Card = Class.create(Sprite, {
-            initialize: function (cardStr) {
+            initialize: function (cardStr, scale) {
                 Sprite.call(this, /*130, 193*/ 588 / 7, 960 / 8);
                 this.image = game_.assets['/Content/imgs/trump.png'];
                 this.cardStr = cardStr;
                 this.setCardStr(cardStr);
-                this.scale(0.5, 0.5);
+                if (scale!=undefined) this.scale(scale, scale);
             },
 
             // カードの設定（文字列で指定）
@@ -138,7 +137,7 @@ window.onload = function () {
          * デッキ（手札）
          */
         Deck = Class.create(Group, {
-            initialize: function (cardStr) {
+            initialize: function (cardStr, scale) {
                 Group.call(this);
                 this.cardStr = cardStr;
                 this.cardArr = Array();
@@ -151,7 +150,7 @@ window.onload = function () {
                 this.touchEnable = false;
                 this.tebanMark = null;
                 this.isTeban = false;
-                //this.setTeban(true);
+                this.cardScale = scale == undefined ? 1.0 : scale;
             },
 
             // 手番マークを表示・非表示
@@ -187,11 +186,14 @@ window.onload = function () {
             // スプライトに反映
             updateSprite: function () {
                 var w = 0;
+                var card_w = Math.min(DECK_CARD_W, this.width / this.cardArr.length);
                 // スプライトをセット
                 for (var i = 0; i < this.cardArr.length; i++) {
                     var c = this.isBackside ? '--' : this.cardArr[i];
                     if (!this.cardSpls.childNodes[i]) {
-                        var c = new Card(c);
+                        var c = new Card(c, this.cardScale);
+                        //c.scaleX = this.cardScale;
+                        //c.scaleY = this.cardScale;
                         var _this = this;
                         this.cardSpls.addChild(c);
                         c.addEventListener(Event.TOUCH_END, function () { _this.onTouchEnd(this); });
@@ -199,7 +201,6 @@ window.onload = function () {
                         this.cardSpls.childNodes[i].setCardStr(c);
                     }
                     var s = this.cardSpls.childNodes[i];
-                    var card_w = Math.min(DECK_CARD_W, DECK_W / this.cardArr.length);
                     s.tl.moveTo(card_w * i, 0, 3, enchant.Easing.CIRC_EASEIN);
                     w = card_w * i + s.width;
                 }
@@ -207,7 +208,13 @@ window.onload = function () {
                 while (this.cardArr.length < this.cardSpls.childNodes.length) {
                     this.cardSpls.removeChild(this.cardSpls.lastChild);
                 }
-                this.width = w;
+                //this.width = w;
+            },
+
+        	// カードを含む最小の幅に設定する
+            setToMinWidth: function () {
+                var card_w = Math.min(DECK_CARD_W, this.width / this.cardArr.length);
+                this.width = card_w * this.cardArr.length;
             },
 
             // カードをタップしたとき
@@ -230,6 +237,14 @@ window.onload = function () {
                 return ret;
             },
 
+        	// 拡大縮小
+            setCardScale: function (b) {
+            	if (b!=undefined) this.cardScale = b;
+                for (var i = 0; i < this.cardSpls.childNodes.length; i++) {
+                	this.cardSpls.childNodes[i].scaleX = this.cardScale;
+                	this.cardSpls.childNodes[i].scaleY = this.cardScale;
+                }
+            }
         });
 
         /**
@@ -250,19 +265,20 @@ window.onload = function () {
                 // 子のスプライトにカード文字列を設定。
                 for (var i=0; i<ba.length; i++) {
                     if (!this.ba_cards.childNodes[i]) {
-                        this.ba_cards.addChild(new Deck());
+                        this.ba_cards.addChild(new Deck('', 0.7));
                     }
                     var node = this.ba_cards.childNodes[i];
                     node.replaceCards(ba[i]);
+                    node.setToMinWidth();
                     if (node.x <= 0) {
                         // 場になかったカードは、場に置く。ランダムに位置の揺らぎをつける
-                        var xx = this.width * 3 / 4 + rand(30) -this.x;
+                        var xx = this.width * 3 / 4 + rand(30) - this.x;
                         var yy = this.height / 2 + 60 + rand(30) - this.y;
                         if (i==ba.length-1 && deck) {
                             var x0 = deck.x + deck.width / 2 - this.x;
                             var y0 = deck.y + deck.height / 2 - this.y;
                             node.moveTo(x0, y0);
-                            node.scaleX = node.scaleY = 1.2;
+                            //node.setCardScale(0.7);
                             node.tl.tween({ x: xx, y: yy, rotation: rand(360), time: 6, easing: enchant.Easing.QUAD_EASEOUT});
                         } else {
                             node.moveTo(xx, yy);
@@ -279,7 +295,7 @@ window.onload = function () {
             nagare: function () {
                 for (var i = 0; i < this.ba_cards.childNodes.length; i++) {
                     var spl = this.ba_cards.childNodes[i];
-                        this.yama_cards.addChild(new Deck(spl.cardStr));
+                    this.yama_cards.addChild(new Deck(spl.cardStr, 0.7));
                     this.yama_cards.addChild(spl);
                     spl.tl.moveBy(-this.width / 2 + 40, 0, 8, enchant.Easing.BACK_EASEOUT);
                 }
@@ -306,7 +322,7 @@ window.onload = function () {
                 Group.call(this);
                 this.id = id;
                 this.info = info;
-                this.deck = new Deck();
+                this.deck = new Deck('');
                 this.addChild(this.deck);
             }
         });
@@ -378,11 +394,16 @@ window.onload = function () {
             },
 
             // プレイヤーの追加登録
-            addPlayers: function (playerInfoArr) {
+            addPlayers: function (playerInfoArr, mainPlayerNum) {
+            	this.mainPlayerNum = mainPlayerNum;
                 for (var i = 0; i < playerInfoArr.length; i++) {
                     var player = new DaifugoPlayer(i, playerInfoArr[i]);
                     this.players[i] = player;
+                    var d = player.deck;
+                    if (i == 0) { d.setCardScale(0.8); }
+                    else { d.setCardScale(0.5); }
                     this.addChild(player);
+
                     var box = new PlayerInfoBox(INFOBOX_W, INFOBOX_H);
                     this.playerInfoBoxes[i] = box;
                     this.addChild(box);
@@ -414,6 +435,10 @@ window.onload = function () {
 
             // オブジェクトの配置を行う
             doLayout: function () {
+				// メインプレイヤーの手札のサイズ
+                var myd = this.players[this.mainPlayerNum].deck;
+                myd.width = MYDECK_W;
+				myd.height = MYDECK_H;
                 // 手札の座標（センターのXY座標）と回転角
                 var xyr = [
                     GAME_W/2, GAME_H - MYDECK_H/2, 0,
@@ -426,11 +451,10 @@ window.onload = function () {
                     if (i < 5) {
                         d.x = xyr[i * 3] - d.width/2;
                         d.y = xyr[i * 3 + 1] - d.height/2;
-                        if (i == 0) { d.scaleX = d.scaleY = MYDECK_H/DECK_H; }
                         d.rotation = xyr[i * 3 + 2];
                     } else {
                         // 5人目以降は表示できない
-                        d.scaleX = d.scaleY = 0;
+                    	d.visible = false;
                     }
                 }
 
@@ -450,7 +474,7 @@ window.onload = function () {
                         d.rotation = xyr[i * 3 + 2];
                     } else {
                         // 5人目以降は表示できない
-                        d.scaleX = d.scaleY = 0;
+                    	d.visible = false;
                     }
                 }
             }
@@ -520,9 +544,13 @@ window.onload = function () {
             var scene = new Scene();                            // 新しいシーンを作る
             scene.backgroundColor = '#a6e39d';
 
-
-            //var d = new Deck();
-            //scene.addChild(d);
+            // 山
+            var yama = new Yama();
+            yama.width = GAME_W - (DECK_H + 20)*2;
+            yama.height = GAME_H - (DECK_H + 20)*2;
+            yama.x = DECK_H + 20;
+            yama.y = DECK_H + 20;
+            scene.addChild(yama);
 
             // 情報表示ラベル
             var gameInfo = new Label('ネオ大富豪');
@@ -535,14 +563,6 @@ window.onload = function () {
             // プレイヤー管理クラス
             var pm = new PlayerManager(GAME_W, GAME_H);
             scene.addChild(pm);
-
-            // 山
-            var yama = new Yama();
-            yama.width = GAME_W - (DECK_H + 20)*2;
-            yama.height = GAME_H - (DECK_H + 20)*2;
-            yama.x = DECK_H + 20;
-            yama.y = DECK_H + 20;
-            scene.addChild(yama);
 
             // ＯＫボタン
             var okbutton = new Button("ＯＫ", "light");
@@ -646,8 +666,7 @@ window.onload = function () {
                     yama.clear();
                     yama.drawBoxLine(YAMA_BORDER_COLOR);
                     pm.clear();
-                    pm.addPlayers(obj.PlayerInfo);
-                    pm.mainPlayerNum = obj.YourNum;                    
+                    pm.addPlayers(obj.PlayerInfo, obj.YourNum);
                     pm.doLayout();  // 手札の配置
                 } else {
                     pm.setPlayerInfo(obj.PlayerInfo, obj.Deck, obj.Teban);  // 手札、プレイヤー情報を更新
