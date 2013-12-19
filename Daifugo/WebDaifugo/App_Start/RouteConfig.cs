@@ -14,8 +14,11 @@ namespace WebDaifugo
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+			// WebSockets
             routes.Add(new Route("monitor", new WsRouteHandler<MoniterHandler>()));
             routes.Add(new Route("play/{rule}/{id}", new WsRouteHandler<PlayerHandler>()));
+
+			// Web Pages
             routes.MapRoute(
                 name: "QuickPlay",
                 url: "QuickPlay/{rule}/",

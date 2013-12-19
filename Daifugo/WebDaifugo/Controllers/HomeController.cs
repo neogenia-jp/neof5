@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebDaifugo.AppClasses;
 using WebDaifugo.WsHandlers;
 
 namespace WebDaifugo.Controllers
@@ -20,7 +21,7 @@ namespace WebDaifugo.Controllers
 		public ActionResult QuickPlay(string rule, string name)
         {
             // あいているところを自動で探す
-            var id = GameMasterManager.MakeTempSession();
+            var id = PlayRoomsManager.MakeTempSession();
 
             ViewBag.RoomId = id;
             ViewBag.Name = string.IsNullOrWhiteSpace(name) ? "あなた" : name;

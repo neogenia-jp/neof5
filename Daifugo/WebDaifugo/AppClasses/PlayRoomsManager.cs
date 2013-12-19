@@ -3,25 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using WebDaifugo.Models;
 
-namespace WebDaifugo.WsHandlers
+namespace WebDaifugo.AppClasses
 {
-    public class GameMasterManager
+    public class PlayRoomsManager
     {
-        private static Dictionary<string, GameMaster> pool = new Dictionary<string, GameMaster>();
+        private static Dictionary<string, DaifugoPlayRoom> pool = new Dictionary<string, DaifugoPlayRoom>();
 
-        public static GameMaster GetOrCreate(string sessionId, string rule="A")
+        public static DaifugoPlayRoom GetOrCreate(string sessionId, string rule="A")
         {
             lock (pool)
             {
                 sessionId = sessionId ?? "0";
                 if (!pool.ContainsKey(sessionId))
                 {
-                    var ctx = ContextFactory.CreateGameContext(rule=="A"?0:1);
-                    var gm = ContextFactory.CreateGameMaster(ctx);
-                    gm.wait_msec = 800;
-                    pool[sessionId] = gm;
-                    return gm;
+					var pr = new DaifugoPlayRoom(sessionId, rule);
+                    pool[sessionId] = pr;
+                    pr.Master.wait_msec = 800;
+                    return pr;
                 }
                 return pool[sessionId];
             }
@@ -46,5 +46,9 @@ namespace WebDaifugo.WsHandlers
             return "" + sessionId;
         }
 
+        public static DaifugoPlayRoom Get(string sessionid)
+        {
+            return pool.ContainsKey(sessionid) ? pool[sessionid] : null;
+        }
     }
 }

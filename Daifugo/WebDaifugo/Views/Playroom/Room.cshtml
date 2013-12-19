@@ -1,0 +1,76 @@
+﻿@model WebDaifugo.AppClasses.DaifugoPlayRoom
+@{
+    ViewBag.Title = "プレイルーム [" + ViewBag.RoomID + "]";
+}
+<div class="container">
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+
+		@if (Model!=null && Model.Master.IsPlaing) {
+		<h3>現在の成績</h3>
+		<div class="table-responsive">
+			<table class="table table-bordered">
+				<tr>
+					<th>プレイヤー名</th>
+					<th>総合得点</th>
+					<th>現ラウンドの得点</th>
+					<th>大富豪</th>
+					<th>富豪</th>
+					<th>平民</th>
+					<th>貧民</th>
+					<th>大貧民</th>
+				</tr>
+				@foreach (var item in Model.Standings) {
+				<tr>
+					<td>@item.PlayerName</td>
+					<td>@(item.TransferredPoint + item.RoundPoint)</td>
+					<td>@item.RoundPoint</td>
+					<td>@item.NumTimesDaifugo</td>
+					<td>@item.NumTimesFugo</td>
+					<td>@item.NumTimesHeimin</td>
+					<td>@item.NumTimesHinmin</td>
+					<td>@item.NumTimesDaihinmin</td>
+				</tr>
+				}
+			</table>
+			<a class="button" href="monitor/@Model.RoomID">観戦する</a>
+		</div>
+		} else {
+			<h3>空き</h3>
+			<div>現在の入室人数：@(Model==null ? 0 : Model.Master.NumOfPlayers) 人</div>
+			<input type="text" id="name" placeholder="名前" />
+			<a class="button" id="btn_entry">入室する</a>
+		}
+    </div>
+</div>
+</div>
+
+
+@section Scripts{
+<script type="text/javascript">
+	$(function () {
+		if (!WebSocket) {
+			$('#ng').fadeIn();
+			alert('NG');
+		} else {
+			$('#ok').fadeIn();
+		}
+	});
+	
+	function entryNewWindow(rule,roomid,name) {
+		window.open('/entry/'+rule+'/'+ roomid + '?name='+name, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');  
+	}
+
+	$('#btn_entry').click(function () {
+		var name = $('#name').val();
+		if (!name) {
+			alert('名前を入力してください。');
+			return;
+		}
+		entryNewWindow('@ViewBag.Rule', '@ViewBag.RoomID', name);
+	});
+</script>
+}

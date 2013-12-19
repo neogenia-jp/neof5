@@ -132,13 +132,18 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Basis\Extentions.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\WaitingRoomController.cs" />
+    <Compile Include="Controllers\PlayroomController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="AppClasses\DaifugoPlayRoom.cs" />
+    <Compile Include="Models\IPlayRoomModel.cs" />
+    <Compile Include="Models\IStandingsModel.cs" />
+    <Compile Include="Models\StandingsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WsHandlers\GameMasterManager.cs" />
+    <Compile Include="AppClasses\PlayRoomsManager.cs" />
     <Compile Include="WsProtocols\ProtocolData.cs" />
     <Compile Include="WsHandlers\WstRouteHandler.cs" />
     <Compile Include="WsHandlers\PlayerHandler.cs" />
@@ -226,14 +231,14 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\WaitingRoom\Index.cshtml" />
-    <Content Include="Views\WaitingRoom\QuickPlay.cshtml" />
-    <Content Include="Views\WaitingRoom\TestPlay.cshtml" />
+    <Content Include="Views\Playroom\Index.cshtml" />
+    <Content Include="Views\Playroom\QuickPlay.cshtml" />
+    <Content Include="Views\Playroom\TestPlay.cshtml" />
     <Content Include="Views\Home\Entry.cshtml" />
+    <Content Include="Views\Playroom\Room.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

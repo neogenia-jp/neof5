@@ -12,7 +12,7 @@ using Daifugo.Players;
 
 namespace Daifugo.GameImples
 {
-    public class GameMaster : GameEvents
+    public class GameMaster : GameEvents, IDisposable
     {
         public int wait_msec = 10;
         private Random rand = new Random();
@@ -37,6 +37,12 @@ namespace Daifugo.GameImples
             IsPlaing = false;
         }
 
+        public void Dispose()
+        {
+            playerContexts.Clear();
+            observers.Clear();
+        }
+
         /// <summary>
         /// 全員の手札を返す（モニター用）
         /// </summary>
@@ -50,8 +56,11 @@ namespace Daifugo.GameImples
 
         public void AddPlayer(IGamePlayer p)
         {
-            playerContexts[p] = new PlayerContext(p, context);
-            p.Connect(this);
+            lock (this)
+            {
+                playerContexts[p] = new PlayerContext(p, context);
+                p.Connect(this);
+            }
         }
 
         public void AddObserver(IGameMonitor o) { observers.Add(o); o.Connect(this); }
@@ -59,10 +68,11 @@ namespace Daifugo.GameImples
 
         private void _broadCastForPlayers(Action<IGamePlayer, IPlayerContext> action)
         {
-            context._players.ForEach(p=>action(p,playerContexts[p]));
-
+            lock (this)
+            {
+                context._players.ForEach(p => action(p, playerContexts[p]));
+            }
         }
-
 
         private void _broadCastForMonitors(Action<IGameMonitor, IMonitorContext> action)
         {

@@ -11,7 +11,7 @@ using Daifugo.Bases;
 namespace Daifugo.GameImples
 {
 
-    internal class GameContext : BaseGameContext
+    internal class GameContext : BaseGameContext, IDisposable
     {
         // プレイヤー
         public List<IGamePlayer> _players = new List<IGamePlayer>();
@@ -97,13 +97,10 @@ namespace Daifugo.GameImples
             return _players[Teban];
         }
 
-        /// <summary>
-        /// 流す処理
-        /// </summary>
-        //public void DoNagare()
-        //{
-        //    _ba.ForEach((cs)=>_yama.AddRange(cs));
-        //    _ba.Clear();
-        //}
+        public void Dispose()
+        {
+            _players = null;
+            _history.Clear();
+        }
     }
 }

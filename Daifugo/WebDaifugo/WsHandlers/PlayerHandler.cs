@@ -12,20 +12,24 @@ using Daifugo.GameImples;
 using System.Diagnostics;
 using Daifugo.Players;
 using System.Text.RegularExpressions;
+using WebDaifugo.AppClasses;
+using WebDaifugo.Models;
 
 namespace WebDaifugo.WsHandlers
 {
-    public class PlayerHandler : WebSocketHandler, IGamePlayer
+    public class PlayerHandler : WebSocketHandler, IGamePlayer 
     {
         private static Object lockObj = new object();
         private static WebSocketCollection AllClients = new WebSocketCollection();
+        private static IEnumerable<WebSocketHandler> ActiveClients { get { return AllClients.Where(c => c.WebSocketContext.IsClientConnected); } }
 
         private string sessionId = null;
         private string rule = null;
 
         private string playerName;
         private int playerNum = 0;
-        private GameMaster gm = null;
+        private DaifugoPlayRoom room = null;
+
 
         public override void OnOpen()
         {
@@ -34,32 +38,25 @@ namespace WebDaifugo.WsHandlers
             
                 playerName = this.WebSocketContext.QueryString["name"];
 
-                var mc = Regex.Matches(this.WebSocketContext.RequestUri.OriginalString, @"/play/(A|B)/(\d*)\?");
+                var mc = Regex.Matches(this.WebSocketContext.RequestUri.OriginalString, @"/play/(A|B)/([\-A-Z0-9]*)\?");
                 if (mc.Count > 0)
                 {
                     rule = mc[0].Groups[1].Success ? mc[0].Groups[1].Value.ToString() : "A";
                     sessionId = mc[0].Groups[2].Success ? mc[0].Groups[2].Value.ToString() : "1";
                 }
 
-                gm = GameMasterManager.GetOrCreate(sessionId, rule);
+                room = PlayRoomsManager.GetOrCreate(sessionId, rule);
 
 				// すでにプレイ中なら切断する
-                if (gm==null || gm.IsPlaing) { this.Close(); return; }
+                if (room==null || room.Master.IsPlaing) { this.Close(); return; }
 
-                playerNum = gm.NumOfPlayers;
-                gm.AddPlayer(this);
-
+                playerNum = room.Master.NumOfPlayers;
+                room.AddPlayer(this);
             }
         }
 
         public override void OnClose()
         {
-            lock(lockObj) {
-                AllClients.Remove(this);
-                
-                // TODO
-                GameMasterManager.Remove(sessionId);
-            }
         }
 
         public override void OnError()
@@ -109,16 +106,16 @@ namespace WebDaifugo.WsHandlers
             else if (kind == "Start")
             {
                 // 自動的に不足人数を追加してゲーム開始する
-                var limit = 5 - gm.NumOfPlayers;
+                var limit = 5 - room.Master.NumOfPlayers;
                 for (int i = 1; i <= limit; i++)
                 {
-                    gm.AddPlayer(PoorPlayer.Create("COM" + i, gm));
+                    room.AddPlayer(PoorPlayer.Create("COM" + i, room.Master));
                 }
-                gm.Start();
+                room.Master.Start();
             }
             else if (kind == "Put")
             {
-                var ret = gm.PutCards(this, DeckGenerator.FromCardsetString(jsonObj["Cards"].ToString()));
+                var ret = room.Master.PutCards(this, DeckGenerator.FromCardsetString(jsonObj["Cards"].ToString()));
                 if (!(ret is CheckOK)) return new ProtocolData(ret);
                 myTimer.Enabled = false;
             }
@@ -135,7 +132,7 @@ namespace WebDaifugo.WsHandlers
 
         // =================================== IGamePlayer Impl ===================================
 
-        public string Name { get { return playerName; } }
+        public string Name { get { return playerName + (this.WebSocketContext.IsClientConnected ? "" : "(離脱)"); } }
 
         public void Start(IPlayerContext ctx)
         {
@@ -170,7 +167,7 @@ namespace WebDaifugo.WsHandlers
 
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
         {
-			gm.PutCards(this, DeckGenerator.FromCardsetString(""));
+			room.Master.PutCards(this, DeckGenerator.FromCardsetString(""));
         }
 
         void CardsArePut(IPlayerContext ctx)
