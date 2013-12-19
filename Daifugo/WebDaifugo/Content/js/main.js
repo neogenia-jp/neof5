@@ -46,7 +46,7 @@ window.onload = function () {
     var game_ = new Game(GAME_W, GAME_H); // 表示領域の大きさを設定
 
     game_.fps = GAME_FPS;                 // ゲームの進行スピードを設定
-    game_.preload('/Content/imgs/trump.png');
+    game_.preload('/Content/imgs/trump2.png');
     game_.onload = function() { // ゲームの準備が整ったらメインの処理を実行します
 
         // ============================== Extentions  ==============================
@@ -96,7 +96,7 @@ window.onload = function () {
         Card = Class.create(Sprite, {
             initialize: function (cardStr, scale) {
                 Sprite.call(this, /*130, 193*/ 588 / 7, 960 / 8);
-                this.image = game_.assets['/Content/imgs/trump.png'];
+                this.image = game_.assets['/Content/imgs/trump2.png'];
                 this.cardStr = cardStr;
                 this.setCardStr(cardStr);
                 if (scale!=undefined) this.scale(scale, scale);
@@ -177,6 +177,7 @@ window.onload = function () {
 
             // 裏返しのカードで枚数指定
             toBacksideAll: function (num) {
+            	if (this.cardArr.length == num && this.isBackside) return;  // カード枚数が同じですでに裏返しなら何もすることはない
                 this.cardArr.length = num;
                 for (var i = 0; i < num; i++) this.cardArr[i] = '--';
                 this.isBackside = true;
@@ -255,10 +256,10 @@ window.onload = function () {
                 Group.call(this);
                 this.width = width;
                 this.height = height;
-                this.ba_cards = new Group();
-                this.addChild(this.ba_cards);
                 this.yama_cards = new Group();
                 this.addChild(this.yama_cards);
+                this.ba_cards = new Group();
+                this.addChild(this.ba_cards);
             },
 
             setBaCardsWithAnim: function (ba, deck) {
@@ -272,13 +273,12 @@ window.onload = function () {
                     node.setToMinWidth();
                     if (node.x <= 0) {
                         // 場になかったカードは、場に置く。ランダムに位置の揺らぎをつける
-                        var xx = this.width * 3 / 4 + rand(30) - this.x;
-                        var yy = this.height / 2 + 60 + rand(30) - this.y;
+                        var xx = this.width * 4 / 5 + rand(28) - this.x;
+                        var yy = this.height / 2 + 50 + rand(28) - this.y;
                         if (i==ba.length-1 && deck) {
                             var x0 = deck.x + deck.width / 2 - this.x;
                             var y0 = deck.y + deck.height / 2 - this.y;
                             node.moveTo(x0, y0);
-                            //node.setCardScale(0.7);
                             node.tl.tween({ x: xx, y: yy, rotation: rand(360), time: 6, easing: enchant.Easing.QUAD_EASEOUT});
                         } else {
                             node.moveTo(xx, yy);
@@ -287,20 +287,17 @@ window.onload = function () {
                 }
                 // 余分なスプライトは消す
                 while (ba.length < this.ba_cards.childNodes.length) {
-                    this.ba_cards.removeChild(this.ba_cards[0]);
+                    this.ba_cards.removeChild(this.ba_cards.childNodes[this.ba_cards.childNodes.length-1]);
                 }
             },
 
             // 流れた時の処理
             nagare: function () {
-                for (var i = 0; i < this.ba_cards.childNodes.length; i++) {
-                    var spl = this.ba_cards.childNodes[i];
-                    this.yama_cards.addChild(new Deck(spl.cardStr, 0.7));
+                while (0<this.ba_cards.childNodes.length) {
+                    var spl = this.ba_cards.childNodes[0];
+                    this.ba_cards.removeChild(spl);
                     this.yama_cards.addChild(spl);
                     spl.tl.moveBy(-this.width / 2 + 40, 0, 8, enchant.Easing.BACK_EASEOUT);
-                }
-                while (0<this.ba_cards.childNodes.length) {
-                    this.ba_cards.removeChild(this.ba_cards.childNodes[0]);
                 }
             },
 
@@ -442,10 +439,10 @@ window.onload = function () {
                 // 手札の座標（センターのXY座標）と回転角
                 var xyr = [
                     GAME_W/2, GAME_H - MYDECK_H/2, 0,
-                    DECK_H/2, GAME_H - DECK_W/2, 90,
-                    DECK_W/2, DECK_H / 2, 180,
+                    DECK_H/2, DECK_H + INFOBOX_H + DECK_W/2, 90,
+                    DECK_W/2 + 30, DECK_H / 2, 180,
                     GAME_W - DECK_H - INFOBOX_W - DECK_W/2, DECK_H / 2, 180,
-                    GAME_W - DECK_H/2, DECK_W /2, 270];
+                    GAME_W - DECK_H/2, GAME_H - DECK_H - INFOBOX_H - DECK_W /2, 270];
                 for (var i = 0; i < this.players.length; i++) {
                     var d = this.players[(i + this.mainPlayerNum) % (this.players.length)].deck;
                     if (i < 5) {
@@ -461,10 +458,10 @@ window.onload = function () {
                 // 情報ボックスの座標（左上のXY座標）
                 xyr = [
                     DECK_H, GAME_H - INFOBOX_H, 0,
-                    0, GAME_H - DECK_W - INFOBOX_H, 0,
-                    DECK_W, 0, 0,
+                    0, DECK_H + 18, 0,
+                    DECK_W + 30, 0, 0,
                     GAME_W - DECK_H - INFOBOX_W, 0, 0,
-                    GAME_W - INFOBOX_W, DECK_W, 0
+                    GAME_W - INFOBOX_W, GAME_H - DECK_H - INFOBOX_H - 18, 0
                 ];
                 for (var i = 0; i < this.players.length; i++) {
                     var d = this.playerInfoBoxes[(i + this.mainPlayerNum) % (this.players.length)];

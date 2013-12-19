@@ -163,7 +163,7 @@
     <Content Include="Content\imgs\navigationBar.png" />
     <Content Include="Content\imgs\pad.png" />
     <Content Include="Content\imgs\start.png" />
-    <Content Include="Content\imgs\trump.png" />
+    <Content Include="Content\imgs\trump2.png" />
     <Content Include="Content\js\enchant.js" />
     <Content Include="Content\js\main.js" />
     <Content Include="Content\js\plugins\avatar.enchant.js" />
