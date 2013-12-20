@@ -15,6 +15,7 @@ namespace WebDaifugo.Controllers
 
         public ActionResult Index()
         {
+            ViewData["show_fork_me_ribon"] = true;
             return View();
         }
 

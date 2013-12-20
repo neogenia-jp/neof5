@@ -18,8 +18,10 @@
     <![endif]-->
   </head>
   <body>
-	<a class="fork-me-on-bitbucket" href="https://bitbucket.org/lobin_z0x50/daifugo" target="_blank"></a>
-	  
+	@if (ViewData.ContainsKey("show_fork_me_ribon")){
+		<a class="fork-me-on-bitbucket" href="https://bitbucket.org/lobin_z0x50/daifugo" target="_blank"></a>
+	}
+
     @RenderBody()
 
     @Scripts.Render("~/bundles/jquery")
