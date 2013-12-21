@@ -27,10 +27,10 @@
 		}
 	});
 	
-	function startNewWindow(rule,name) {
+	function openGameWindow(rule,name) {
 		window.open('quickplay/'+rule+'/?name='+name, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');  
 	}
 
-	$('#btnB').click(function () { startNewWindow('B', 'あなた'); });
+	$('#btnB').click(function () { openGameWindow('B', 'あなた'); });
 </script>
 }

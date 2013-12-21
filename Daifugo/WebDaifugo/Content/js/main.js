@@ -266,7 +266,9 @@ window.onload = function () {
                 // 子のスプライトにカード文字列を設定。
                 for (var i=0; i<ba.length; i++) {
                     if (!this.ba_cards.childNodes[i]) {
-                        this.ba_cards.addChild(new Deck('', 0.7));
+                    	var node = new Deck('', 0.7);
+                        node.y = -999;
+                        this.ba_cards.addChild(node);
                     }
                     var node = this.ba_cards.childNodes[i];
                     node.replaceCards(ba[i]);
@@ -278,7 +280,7 @@ window.onload = function () {
                         if (i==ba.length-1 && deck) {
                             var x0 = deck.x + deck.width / 2 - this.x;
                             var y0 = deck.y + deck.height / 2 - this.y;
-                            node.moveTo(x0, y0);
+                            node.x = x0; node.y = y0;
                             node.tl.tween({ x: xx, y: yy, rotation: rand(360), time: 6, easing: enchant.Easing.QUAD_EASEOUT});
                         } else {
                             node.moveTo(xx, yy);

@@ -133,6 +133,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Basis\Extentions.cs" />
+    <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PlayroomController.cs" />
     <Compile Include="Global.asax.cs">
@@ -234,7 +235,7 @@
     <Content Include="Views\Playroom\Index.cshtml" />
     <Content Include="Views\Playroom\QuickPlay.cshtml" />
     <Content Include="Views\Playroom\TestPlay.cshtml" />
-    <Content Include="Views\Home\Entry.cshtml" />
+    <Content Include="Views\Game\Index.cshtml" />
     <Content Include="Views\Playroom\Room.cshtml" />
   </ItemGroup>
   <ItemGroup>

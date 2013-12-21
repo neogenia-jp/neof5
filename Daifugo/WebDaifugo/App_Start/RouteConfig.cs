@@ -22,12 +22,12 @@ namespace WebDaifugo
             routes.MapRoute(
                 name: "QuickPlay",
                 url: "QuickPlay/{rule}/",
-                defaults: new { controller = "Home", action = "QuickPlay" }
+                defaults: new { controller = "Game", action = "Index" }
             );
             routes.MapRoute(
                 name: "Entry",
                 url: "Entry/{rule}/{id}",
-                defaults: new { controller = "Home", action = "Entry" }
+                defaults: new { controller = "Game", action = "Entry" }
             );
             routes.MapRoute(
                 name: "Default",
