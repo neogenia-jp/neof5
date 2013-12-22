@@ -36,13 +36,13 @@
 				</tr>
 				}
 			</table>
-			<a class="button" href="monitor/@Model.RoomID">観戦する</a>
+			<a class="btn btn-success" href="monitor/@Model.RoomID">観戦する</a>
 		</div>
 		} else {
 			<h3>空き</h3>
 			<div>現在の入室人数：@(Model==null ? 0 : Model.Master.NumOfPlayers) 人</div>
 			<input type="text" id="name" placeholder="名前" />
-			<a class="button" id="btn_entry">入室する</a>
+			<a class="btn btn-primary" id="btn_entry">入室する</a>
 		}
     </div>
 </div>

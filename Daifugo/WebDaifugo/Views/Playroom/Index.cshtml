@@ -12,7 +12,7 @@
         @foreach (var item in Model.RoomsA)
         {
             <a class="tile bg-color-blue" href="room/@item.Key">
-                <strong>@(item.Value == null || item.Value.Master.NumOfPlayers==0 ? "空き" : item.Value.Master.IsPlaing ? "プレイ中" : "受付中")</strong>
+                <strong>@(item.Value == null || item.Value.Master.NumOfPlayers==0 ? "空き" : item.Value.Master.IsPlaing ? "プレイ中" : "★受付中")</strong>
                 <p>@item.Key</p>
             </a>
         }
@@ -23,7 +23,7 @@
         @foreach (var item in Model.RoomsB)
         {
             <a class="tile bg-color-orange" href="room/@item.Key">
-                <strong>@(item.Value == null || item.Value.Master.NumOfPlayers==0 ? "空き" : item.Value.Master.IsPlaing ? "プレイ中" : "受付中")</strong>
+                <strong>@(item.Value == null || item.Value.Master.NumOfPlayers==0 ? "空き" : item.Value.Master.IsPlaing ? "プレイ中" : "★受付中")</strong>
                 <p>@item.Key</p>
             </a>
         }

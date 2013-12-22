@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WebDaifugo.AppClasses;
+using WebDaifugo.Basis;
 using WebDaifugo.WsHandlers;
 
 namespace WebDaifugo.Controllers
@@ -34,13 +35,14 @@ namespace WebDaifugo.Controllers
 
         //
         // GET: /Playroom/
-
+		[NoCache]
         public ActionResult Index()
         {
             var vm = ViewModel.Create();
             return View(vm);
         }
 
+		[NoCache]
         public ActionResult Room(string id)
         {
             var playroom = PlayRoomsManager.Get(id);
@@ -73,5 +75,6 @@ namespace WebDaifugo.Controllers
 
             return View();
         }
+
     }
 }
