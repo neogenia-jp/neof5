@@ -262,7 +262,34 @@ window.onload = function () {
                 this.addChild(this.ba_cards);
             },
 
-            setBaCardsWithAnim: function (ba, deck) {
+            setYamaCards: function(yama) {
+            	if (this.yama_cards.childNodes.length != 0) return;  // カードがすでに設定されていれば処理省略。
+
+                for (var i=0; i<yama.length; i++) {
+                    if (!this.yama_cards.childNodes[i]) {
+                    	var node = new Deck('', 0.7);
+                        this.yama_cards.addChild(node);
+                    }
+                    var node = this.yama_cards.childNodes[i];
+                    node.replaceCards(yama[i]);
+                    node.setToMinWidth();
+                    if (node.x <= 0) {
+                        // 山になかったカードは、山に置く。ランダムに位置の揺らぎをつける
+                    	var xx = this.width * 4 / 5 + rand(28) - this.x - this.width / 2 + 40;
+                        var yy = this.height / 2 + 50 + rand(28) - this.y;
+                        node.tl.tween({ x: xx, y: yy, rotation: rand(360), time: 1, easing: enchant.Easing.QUAD_EASEOUT});
+                        //node.moveTo(xx, yy);
+                    }
+                }
+                // 余分なスプライトは消す
+                while (yama.length < this.yama_cards.childNodes.length) {
+                    this.yama_cards.removeChild(this.yama_cards.childNodes[this.yama_cards.childNodes.length-1]);
+                }
+            },
+
+            setBaCardsWithAnim: function (ba, deck, withAnim) { this.setBaCards(ba, deck, true); },
+
+            setBaCards: function (ba, deck, withAnim) {
                 // 子のスプライトにカード文字列を設定。
                 for (var i=0; i<ba.length; i++) {
                     if (!this.ba_cards.childNodes[i]) {
@@ -277,13 +304,13 @@ window.onload = function () {
                         // 場になかったカードは、場に置く。ランダムに位置の揺らぎをつける
                         var xx = this.width * 4 / 5 + rand(28) - this.x;
                         var yy = this.height / 2 + 50 + rand(28) - this.y;
-                        if (i==ba.length-1 && deck) {
+                        if (withAnim && i==ba.length-1 && deck) {
                             var x0 = deck.x + deck.width / 2 - this.x;
                             var y0 = deck.y + deck.height / 2 - this.y;
                             node.x = x0; node.y = y0;
                             node.tl.tween({ x: xx, y: yy, rotation: rand(360), time: 6, easing: enchant.Easing.QUAD_EASEOUT});
                         } else {
-                            node.moveTo(xx, yy);
+                            node.tl.tween({ x: xx, y: yy, rotation: rand(360), time: 1, easing: enchant.Easing.QUAD_EASEOUT});
                         }
                     }
                 }
@@ -655,83 +682,95 @@ window.onload = function () {
                 if (obj.Kind == "Exception") {
                     gameInfo.text = 'エラー';
                     alert(obj.Message);
-                } else if (obj.Kind == "Finish") {
-                    okbutton.tl.fadeOut(3).moveTo(-10000,0,1);
-                    startButton.y = GAME_H / 2 -40;
-                    startButton.tl.fadeIn(3).and().moveBy(0, -40, 4);
                 } else if (obj.Kind == "Start") {
-                    startButton.tl.fadeOut(3).and().moveBy(0, 40, 4);
-                    gameInfo.text = 'ゲーム開始';
-                    yama.clear();
-                    yama.drawBoxLine(YAMA_BORDER_COLOR);
-                    pm.clear();
-                    pm.addPlayers(obj.PlayerInfo, obj.YourNum);
-                    pm.doLayout();  // 手札の配置
+                	//startButton.tl.fadeOut(3).and().moveBy(0, 40, 4);
+                	gameInfo.text = 'ゲーム開始';
+                	yama.clear();
+                	pm.clear();
                 } else {
-                    pm.setPlayerInfo(obj.PlayerInfo, obj.Deck, obj.Teban);  // 手札、プレイヤー情報を更新
-                    //var deck = pm.players[obj.Teban].deck;
-                    //tebanMark.tl.tween({
-                    //    x: deck.x, y: deck.y,
-                    //    rotation: deck.rotation,
-                    //    time: 3
-                    //});
+                	startButton.visible = false;
+                	if (!pm.players.length) {
+                		yama.drawBoxLine(YAMA_BORDER_COLOR);
+                		pm.addPlayers(obj.PlayerInfo, obj.YourNum);
+                		pm.doLayout();  // 手札の配置
+                	}
 
-                    if (obj.Kind == "CardDistributed") {
-                    
-                    } else if (obj.Kind == "CardsArePut") {
-                        if (obj.Teban == obj.YourNum) {
-                            okbutton.tl.fadeOut(3).and().moveBy(0, 40, 4).moveTo(-10000, 0, 1);
-                            yama.drawBoxLine(YAMA_BORDER_COLOR);
-                            //tebanMark.tl.fadeOut(3);
-                        }
-                        gameInfo.text = obj.IsKakumei ? "革命中": '';
+                	pm.setPlayerInfo(obj.PlayerInfo, obj.Deck, obj.Teban);  // 手札、プレイヤー情報を更新
+                	yama.setYamaCards(obj.Yama.split(' '));
 
-                        yama.setBaCardsWithAnim(obj.Ba, pm.findPlayerById(obj.Teban).deck);
-                //for (var i = 0; i < pm.players.length; i++) {
-                //    pm.players[i].deck.setTeban(i == obj.Teban);  // 手番マークを設定
-                //    //pm.players[i].deck.setTeban(true);  // 手番マークを設定
-                //}
-                        setTebanFunc(pm, obj.Teban);
-                    } else if (obj.Kind == "Thinking") {
-                        setTebanFunc(pm, obj.Teban);
-                    } else if (obj.Kind == "Nagare") {
-                        gameInfo.text = "流れました";
-                        showToast("流れました");
-                        //yama.setBaCardsWithAnim(obj.Ba, pm.findPlayerById(obj.Teban).deck);
-                        yama.nagare();
-                        setTebanFunc(pm, obj.Teban);
-                    } else if (obj.Kind == "ProcessTurn") {
-                        gameInfo.text = "あなたの番です";
-                        setTebanFunc(pm, obj.Teban);
-                        // 山の罫線を赤くする
-                        yama.drawBoxLine(YAMA_BORDER_HICOLOR);
-                        var mydeck = pm.findPlayerById(obj.YourNum).deck;
-                        mydeck.touchEnable = true;
+                	var withAnim = false;
 
-                        okbutton.x = yama.x + yama.width + 6;
-                        okbutton.y = yama.y + yama.height + 46;
-                        okbutton.tl.fadeIn(3).and().moveBy(0, -40, 4);
+                	if (obj.Kind == "Finish") {
+                		okbutton.tl.fadeOut(3).moveTo(-10000, 0, 1);
+                		startButton.y = GAME_H / 2 - 40;
+                		startButton.tl.fadeIn(3).and().moveBy(0, -40, 4);
+                		startButton.visible = true;
+                		//var deck = pm.players[obj.Teban].deck;
+                		//tebanMark.tl.tween({
+                		//    x: deck.x, y: deck.y,
+                		//    rotation: deck.rotation,
+                		//    time: 3
+                		//});
 
-                        // OKタッチされた時のイベントハンドラを設定
-                        okbutton.ontouchend = function () {
-                            var selCards = mydeck.getSelectedCards();
-                            var obj = new Object();
-                            obj.Kind = 'Put';
-                            obj.Cards = selCards.join(' ');
-                            var jsonString = JSON.stringify(obj);
-                            socket.send(jsonString);
-                            console.debug('send: ' + jsonString);
-                            //mydeck.touchEnable = false;
-                            //okbutton.tl.fadeOut(3);
-                        };
+                	} else if (obj.Kind == "CardDistributed") {
 
-                    } else if (obj.Kind == "Kakumei") {
-                        showToast(obj.IsKakumei ? '革命！' : '革命返し！');
-                    } else if (obj.Kind == "Agari") {
-                        var pi = obj.PlayerInfo[obj.Teban];
-                        showToast(pi.Name + 'さん あがり！ (' + pi.OrderOfFinish + '位)');
-                    }
+                	} else if (obj.Kind == "CardsArePut") {
+                		if (obj.Teban == obj.YourNum) {
+                			okbutton.tl.fadeOut(3).and().moveBy(0, 40, 4).moveTo(-10000, 0, 1);
+                			yama.drawBoxLine(YAMA_BORDER_COLOR);
+                			//tebanMark.tl.fadeOut(3);
+                		}
+                		gameInfo.text = obj.IsKakumei ? "革命中" : '';
+                		withAnim = true;
+                		//yama.setBaCardsWithAnim(obj.Ba, pm.findPlayerById(obj.Teban).deck);
+                		//for (var i = 0; i < pm.players.length; i++) {
+                		//    pm.players[i].deck.setTeban(i == obj.Teban);  // 手番マークを設定
+                		//    //pm.players[i].deck.setTeban(true);  // 手番マークを設定
+                		//}
+                		setTebanFunc(pm, obj.Teban);
+                	} else if (obj.Kind == "Thinking") {
+                		setTebanFunc(pm, obj.Teban);
+                	} else if (obj.Kind == "Nagare") {
+                		gameInfo.text = "流れました";
+                		showToast("流れました");
+                		//yama.setBaCardsWithAnim(obj.Ba, pm.findPlayerById(obj.Teban).deck);
+                		yama.nagare();
+                		setTebanFunc(pm, obj.Teban);
+                	} else if (obj.Kind == "ProcessTurn") {
+                		gameInfo.text = "あなたの番です";
+                		setTebanFunc(pm, obj.Teban);
+                		// 山の罫線を赤くする
+                		yama.drawBoxLine(YAMA_BORDER_HICOLOR);
+                		var mydeck = pm.findPlayerById(obj.YourNum).deck;
+                		mydeck.touchEnable = true;
+
+                		okbutton.x = yama.x + yama.width + 6;
+                		okbutton.y = yama.y + yama.height + 46;
+                		okbutton.tl.fadeIn(3).and().moveBy(0, -40, 4);
+
+                		// OKタッチされた時のイベントハンドラを設定
+                		okbutton.ontouchend = function () {
+                			var selCards = mydeck.getSelectedCards();
+                			var obj = new Object();
+                			obj.Kind = 'Put';
+                			obj.Cards = selCards.join(' ');
+                			var jsonString = JSON.stringify(obj);
+                			socket.send(jsonString);
+                			console.debug('send: ' + jsonString);
+                			//mydeck.touchEnable = false;
+                			//okbutton.tl.fadeOut(3);
+                		};
+
+                	} else if (obj.Kind == "Kakumei") {
+                		showToast(obj.IsKakumei ? '革命！' : '革命返し！');
+                	} else if (obj.Kind == "Agari") {
+                		var pi = obj.PlayerInfo[obj.Teban];
+                		showToast(pi.Name + 'さん あがり！ (' + pi.OrderOfFinish + '位)');
+                	}
+
+                	yama.setBaCards(obj.Ba, pm.findPlayerById(obj.Teban).deck, withAnim);
                 }
+                
             }
 
             if (gAutostart) setTimeout(function () { SendStart(); }, 300);   // 自動スタート

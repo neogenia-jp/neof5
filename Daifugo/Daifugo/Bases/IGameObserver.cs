@@ -6,7 +6,7 @@ namespace Daifugo.Bases
 {
     public interface IGameObserver
     {
-        void Connect(GameEvents evt);
+        void BindEvents(GameEvents evt);
 
         ///// <summary>
         ///// トリック開始通知

@@ -8,7 +8,7 @@ using Daifugo.Cards;
 using Daifugo.Bases;
 using Daifugo.Utils;
 
-namespace WebDaifugo.WsProtocols
+namespace WebDaifugo.Neof5Protocols
 {
     internal class ProtocolData
     {

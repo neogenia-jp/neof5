@@ -59,11 +59,11 @@ namespace Daifugo.GameImples
             lock (this)
             {
                 playerContexts[p] = new PlayerContext(p, context);
-                p.Connect(this);
+                p.BindEvents(this);
             }
         }
 
-        public void AddObserver(IGameMonitor o) { observers.Add(o); o.Connect(this); }
+        public void AddObserver(IGameMonitor o) { observers.Add(o); o.BindEvents(this); }
         public void RemoveObsrver(IGameMonitor o) { observers.Remove(o); /* TODO */ }
 
         private void _broadCastForPlayers(Action<IGamePlayer, IPlayerContext> action)

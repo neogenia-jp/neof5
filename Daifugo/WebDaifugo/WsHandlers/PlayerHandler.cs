@@ -5,7 +5,7 @@ using System.Web;
 using Microsoft.Web.WebSockets;
 using Newtonsoft.Json.Linq;
 using Daifugo;
-using WebDaifugo.WsProtocols;
+using WebDaifugo.Neof5Protocols;
 using Daifugo.Cards;
 using Daifugo.Bases;
 using Daifugo.GameImples;
@@ -17,7 +17,7 @@ using WebDaifugo.Models;
 
 namespace WebDaifugo.WsHandlers
 {
-    public class PlayerHandler : WebSocketHandler, IGamePlayer 
+    public class PlayerHandler : WebSocketHandler
     {
         private static Object lockObj = new object();
         private static WebSocketCollection AllClients = new WebSocketCollection();
@@ -26,16 +26,19 @@ namespace WebDaifugo.WsHandlers
         private string sessionId = null;
         private string rule = null;
 
-        private string playerName;
-        private int playerNum = 0;
+        public string playerName { get; private set; }
         private DaifugoPlayRoom room = null;
 
+        private GamePlayerAdapter pAdapter = null;
 
         public override void OnOpen()
         {
-            lock(lockObj) {
+            Debug.WriteLine(WebSocketContext.Headers);
+            lock (lockObj)
+            {
                 AllClients.Add(this);
-            
+
+                // クエリストリングを自力で解析
                 playerName = this.WebSocketContext.QueryString["name"];
 
                 var mc = Regex.Matches(this.WebSocketContext.RequestUri.OriginalString, @"/play/(A|B)/([\-A-Z0-9]*)\?");
@@ -46,17 +49,29 @@ namespace WebDaifugo.WsHandlers
                 }
 
                 room = PlayRoomsManager.GetOrCreate(sessionId, rule);
+                var key = CreatePlayerKey();
 
-				// すでにプレイ中なら切断する
-                if (room==null || room.Master.IsPlaing) { this.Close(); return; }
+                pAdapter = room.FindRemotePlayer(key) as GamePlayerAdapter;
+                if (pAdapter != null && !pAdapter.IsConnected)
+                {
+                    // 再接続とみなす
+                    pAdapter.Reconnect(playerName, (str)=>Send(str));
+                }
+                else
+                {
+                    // すでにプレイ中なら切断する
+                    if (room == null || room.Master.IsPlaing) { this.Close(); return; }
 
-                playerNum = room.Master.NumOfPlayers;
-                room.AddPlayer(this);
+                    pAdapter = new GamePlayerAdapter(room, playerName, (str)=>Send(str));
+                    room.AddPlayer(key, pAdapter);
+                }
             }
         }
 
         public override void OnClose()
         {
+            AllClients.Remove(this);
+            if (pAdapter != null) pAdapter.Disconnect();
         }
 
         public override void OnError()
@@ -75,148 +90,185 @@ namespace WebDaifugo.WsHandlers
 
             try
             {
-                var pd = ProcMessage(jsonObj);
-                if (pd != null) Send(pd);
+                var pd = pAdapter.ProcMessage(jsonObj);
+                if (pd != null) Send(pd.ToJson());
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
-                Send(new ProtocolData(e));
+                Send(new ProtocolData(e).ToJson());
             }
         }
 
-        private ProtocolData ProcMessage(JObject jsonObj)
+		private string CreatePlayerKey() {
+            return WebSocketContext.UserAgent + "\t" + WebSocketContext.UserHostAddress;
+        }
+/*
+        class PlayerAdapter : IGamePlayer
         {
-            string kind = null;
+            PlayerHandler playerHandler;
+            private DaifugoPlayRoom room = null;
+            private int playerNum = 0;
+            private string playerName;
 
-            try
+			/// <summary>
+			/// コンストラクタ
+			/// </summary>
+			/// <param name="room"></param>
+			/// <param name="ph"></param>
+            public PlayerAdapter(DaifugoPlayRoom room, PlayerHandler ph)
             {
-                kind = jsonObj["Kind"].ToString();
-            }
-            catch (Exception)
-            {
-                throw new InvalidOperationException("Kindがありません");
+                this.room = room;
+                playerHandler = ph;
+                playerName = ph.playerName;
+                playerNum = room.Master.NumOfPlayers;
             }
 
-            if (kind == "Tweet")
+            public void Reconnect(PlayerHandler ph) { playerHandler = ph; playerName = ph.playerName; }
+
+            public void Disconnect() { playerHandler = null; }
+
+            public bool IsConnected { get { return playerHandler != null; } }
+
+            public ProtocolData ProcMessage(JObject jsonObj)
             {
-                jsonObj["PlayerNum"] = playerNum;
-                AllClients.Broadcast(jsonObj.ToString());
-            }
-            else if (kind == "Start")
-            {
-                // 自動的に不足人数を追加してゲーム開始する
-                var limit = 5 - room.Master.NumOfPlayers;
-                for (int i = 1; i <= limit; i++)
+                string kind = null;
+
+                try
                 {
-                    room.AddPlayer(PoorPlayer.Create("COM" + i, room.Master));
+                    kind = jsonObj["Kind"].ToString();
                 }
-                room.Master.Start();
+                catch (Exception)
+                {
+                    throw new InvalidOperationException("Kindがありません");
+                }
+
+                if (kind == "Tweet")
+                {
+                    jsonObj["PlayerNum"] = playerNum;
+                    //AllClients.Broadcast(jsonObj.ToString());
+                    // todo
+                }
+                else if (kind == "Start")
+                {
+                    // 自動的に不足人数を追加してゲーム開始する
+                    room.DoComplementPlayers(5);
+                    room.Master.Start();
+                }
+                else if (kind == "Put")
+                {
+                    var ret = room.Master.PutCards(this, DeckGenerator.FromCardsetString(jsonObj["Cards"].ToString()));
+                    if (!(ret is CheckOK)) return new ProtocolData(ret);
+                    myTimer.Enabled = false;
+                }
+                return null;
             }
-            else if (kind == "Put")
+
+            internal void Send(ProtocolData wsp)
             {
-                var ret = room.Master.PutCards(this, DeckGenerator.FromCardsetString(jsonObj["Cards"].ToString()));
-                if (!(ret is CheckOK)) return new ProtocolData(ret);
-                myTimer.Enabled = false;
+                if (playerHandler != null)
+                {
+                    string str = wsp.ToJson();
+                    Debug.WriteLine("Send: " + str);
+                    playerHandler.Send(str);
+                }
             }
-            return null;
-        }
 
-        internal void Send(ProtocolData wsp)
-        {
-            string str = wsp.ToJson();
-            Debug.WriteLine("Send: " + str);
-            base.Send(str);
-        }
+            // =================================== IGamePlayer Impl ===================================
 
+            public string Name { get { return playerName + (playerHandler != null ? "" : "(離脱)"); } }
 
-        // =================================== IGamePlayer Impl ===================================
-
-        public string Name { get { return playerName + (this.WebSocketContext.IsClientConnected ? "" : "(離脱)"); } }
-
-        public void Start(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "Start", ctx));
-        }
-
-        public void Finish(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "Finish", ctx));
-        }
-
-        public void ProcessTurn(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "ProcessTurn", ctx));
-
-			// タイマースタート
-            _startTimer(30*1000);
-        }
-
-        private System.Timers.Timer myTimer;
-        private void _startTimer(int time)
-        {
-            if (myTimer == null)
+            public void Start(IPlayerContext ctx)
             {
-                myTimer = new System.Timers.Timer();
-                myTimer.AutoReset = false;
-                myTimer.Interval = time;
-                myTimer.Elapsed += OnTimer;
+                Send(new WsProtocols.ProtocolData(playerNum, "Start", ctx));
             }
-            myTimer.Enabled = true;
-        }
 
-        public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
-        {
-			room.Master.PutCards(this, DeckGenerator.FromCardsetString(""));
-        }
+            public void Finish(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "Finish", ctx));
+            }
 
-        void CardsArePut(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "CardsArePut", ctx));
-        }
+            public void ProcessTurn(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "ProcessTurn", ctx));
+                if (IsConnected)
+                {
+                    // タイマースタート
+                    _startTimer(30 * 1000);
+                }
+                else
+                {
+					room.Master.PutCards(this, DeckGenerator.FromCardsetString(""));
+                }
+            }
 
-        public void Nagare(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "Nagare", ctx));
-        }
+            private System.Timers.Timer myTimer;
+            private void _startTimer(int time)
+            {
+                if (myTimer == null)
+                {
+                    myTimer = new System.Timers.Timer();
+                    myTimer.AutoReset = false;
+                    myTimer.Interval = time;
+                    myTimer.Elapsed += OnTimer;
+                }
+                myTimer.Enabled = true;
+            }
 
-        public void Agari(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "Agari", ctx));
-        }
+            public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
+            {
+                room.Master.PutCards(this, DeckGenerator.FromCardsetString(""));
+            }
 
-        public void Kakumei(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "Kakumei", ctx));
-        }
+            void CardsArePut(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "CardsArePut", ctx));
+            }
 
-        public void CardDistributed(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "CardDistributed", ctx));
-        }
+            public void Nagare(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "Nagare", ctx));
+            }
 
-        public void CardSwapped(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "CardSwapped", ctx));
-        }
+            public void Agari(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "Agari", ctx));
+            }
 
-        public void Thinking(IPlayerContext ctx)
-        {
-            Send(new WsProtocols.ProtocolData(playerNum, "Thinking", ctx));
-        }
+            public void Kakumei(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "Kakumei", ctx));
+            }
+
+            public void CardDistributed(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "CardDistributed", ctx));
+            }
+
+            public void CardSwapped(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "CardSwapped", ctx));
+            }
+
+            public void Thinking(IPlayerContext ctx)
+            {
+                Send(new WsProtocols.ProtocolData(playerNum, "Thinking", ctx));
+            }
 
 
-        public void Connect(GameEvents evt)
-        {
-            evt.agari += (arg)=>this.Agari(arg(this) as IPlayerContext);
-            evt.cardDistributed+= (arg)=>this.CardDistributed(arg(this) as IPlayerContext);
-            evt.cardsArePut += (arg)=>this.CardsArePut(arg(this) as IPlayerContext);
-            evt.cardSwapped += (arg)=>this.CardSwapped(arg(this) as IPlayerContext);
-            evt.finish += (arg)=>this.Finish(arg(this) as IPlayerContext);
-            evt.kakumei += (arg)=>this.Kakumei(arg(this) as IPlayerContext);
-            evt.nagare += (arg)=>this.Nagare(arg(this) as IPlayerContext);
-            evt.start += (arg)=>this.Start(arg(this) as IPlayerContext);
-            evt.thinking += (arg)=>this.Thinking(arg(this) as IPlayerContext);
+            public void BindEvents(GameEvents evt)
+            {
+                evt.agari += (arg) => this.Agari(arg(this) as IPlayerContext);
+                evt.cardDistributed += (arg) => this.CardDistributed(arg(this) as IPlayerContext);
+                evt.cardsArePut += (arg) => this.CardsArePut(arg(this) as IPlayerContext);
+                evt.cardSwapped += (arg) => this.CardSwapped(arg(this) as IPlayerContext);
+                evt.finish += (arg) => this.Finish(arg(this) as IPlayerContext);
+                evt.kakumei += (arg) => this.Kakumei(arg(this) as IPlayerContext);
+                evt.nagare += (arg) => this.Nagare(arg(this) as IPlayerContext);
+                evt.start += (arg) => this.Start(arg(this) as IPlayerContext);
+                evt.thinking += (arg) => this.Thinking(arg(this) as IPlayerContext);
+            }
         }
+		*/
     }
 }

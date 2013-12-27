@@ -46,7 +46,7 @@ namespace DaifugoTest
 
         public virtual void ProcessTurn(IPlayerContext ctx) { callback(this, "ProcessTurn", ctx); }
 
-        public void Connect(GameEvents evt)
+        public void BindEvents(GameEvents evt)
         {
             throw new NotImplementedException();
         }

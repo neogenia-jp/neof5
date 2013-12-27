@@ -57,6 +57,6 @@ namespace Daifugo.Players
             return null; // 出せるカードがないのでパス
         }
 
-        public override void Connect(GameEvents evt) { }
+        public override void BindEvents(GameEvents evt) { }
     }
 }

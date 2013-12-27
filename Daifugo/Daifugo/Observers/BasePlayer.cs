@@ -72,6 +72,6 @@ namespace Daifugo.Players
         //public virtual void Finish(IPlayerContext ctx) { }
 
 
-        public abstract void Connect(GameEvents evt);
+        public abstract void BindEvents(GameEvents evt);
     }
 }
