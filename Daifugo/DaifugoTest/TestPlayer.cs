@@ -48,7 +48,15 @@ namespace DaifugoTest
 
         public void BindEvents(GameEvents evt)
         {
-            throw new NotImplementedException();
-        }
+            evt.agari += (arg) => this.Agari(arg(this) as IPlayerContext);
+            evt.cardDistributed += (arg) => this.CardDistributed(arg(this) as IPlayerContext);
+            evt.cardsArePut += (arg) => this.CardsArePut(arg(this) as IPlayerContext);
+            evt.cardSwapped += (arg) => this.CardSwapped(arg(this) as IPlayerContext);
+            evt.finish += (arg) => this.Finish(arg(this) as IPlayerContext);
+            evt.kakumei += (arg) => this.Kakumei(arg(this) as IPlayerContext);
+            evt.nagare += (arg) => this.Nagare(arg(this) as IPlayerContext);
+            evt.start += (arg) => this.Start(arg(this) as IPlayerContext);
+            evt.thinking += (arg) => this.Thinking(arg(this) as IPlayerContext);
+        } 
     }
 }
