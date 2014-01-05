@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Daifugo;
 using Daifugo.Cards;
-using Daifugo.Players;
+using Daifugo.Observers;
 using System.Diagnostics;
 using Daifugo.Bases;
 using Daifugo.Rules;

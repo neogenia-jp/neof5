@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Daifugo.Bases
 {
+	public interface IGameEventListener {
+        void bindEvents(GameEvents evt);
+        void unbindEvents(GameEvents evt);
+    }
+
     public class GameEvents
     {
-        public delegate IObserberContext getcontext(IGameObserver o);
+        public delegate IObserverContext getcontext(IGameEventListener o);
         public delegate void gameevent(getcontext ctx);
 
         /// <summary>
@@ -72,44 +77,44 @@ namespace Daifugo.Bases
         /// トリック開始通知
         /// </summary>
         /// <param name="ctx"></param>
-        protected virtual void Start(getcontext ctx) { start(ctx); }
+        protected virtual void Start(getcontext ctx) { if(start!=null) start(ctx); }
 
-        protected virtual void CardDistributed(getcontext ctx) { cardDistributed(ctx); }
+        protected virtual void CardDistributed(getcontext ctx) { if(cardDistributed!=null) cardDistributed(ctx); }
 
-        protected virtual void CardSwapped(getcontext ctx) { cardSwapped(ctx); }
+        protected virtual void CardSwapped(getcontext ctx) { if(cardSwapped!=null) cardSwapped(ctx); }
 
-        protected virtual void Thinking(getcontext ctx) { thinking(ctx); }
+        protected virtual void Thinking(getcontext ctx) { if(thinking!=null) thinking(ctx); }
 
         /// <summary>
         /// 手番の人がカードを捨てた
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="cards"></param>
-        protected virtual void CardsArePut(getcontext ctx) { cardsArePut(ctx); }
+        protected virtual void CardsArePut(getcontext ctx) { if(cardsArePut!=null) cardsArePut(ctx); }
 
         /// <summary>
         /// 革命がおこった
         /// </summary>
         /// <param name="ctx"></param>
-        protected virtual void Kakumei(getcontext ctx) { kakumei(ctx); }
+        protected virtual void Kakumei(getcontext ctx) { if(kakumei!=null) kakumei(ctx); }
 
         /// <summary>
         /// 流れた
         /// </summary>
         /// <param name="ctx"></param>
-        protected virtual void Nagare(getcontext ctx) { nagare(ctx); }
+        protected virtual void Nagare(getcontext ctx) { if(nagare!=null) nagare(ctx); }
 
         /// <summary>
         /// 手番の人が上がった
         /// </summary>
         /// <param name="ctx"></param>
-        protected virtual void Agari(getcontext ctx) { agari(ctx); }
+        protected virtual void Agari(getcontext ctx) { if(agari!=null) agari(ctx); }
 
         /// <summary>
         /// トリック終了通知
         /// </summary>
         /// <param name="ctx"></param>
-        protected virtual void Finish(getcontext ctx) { finish(ctx); }
+        protected virtual void Finish(getcontext ctx) { if(finish!=null) finish(ctx); }
 
     }
 }

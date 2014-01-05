@@ -15,8 +15,11 @@ namespace WebDaifugo
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 			// WebSockets
-            routes.Add(new Route("monitor", new WsRouteHandler<MoniterHandler>()));
+            routes.Add(new Route("monitor/{id}", new WsRouteHandler<MoniterHandler>()));
             routes.Add(new Route("play/{rule}/{id}", new WsRouteHandler<PlayerHandler>()));
+            routes.Add(new Route("test/connection", new WsRouteHandler<ConnectionTestHandler>()));
+            routes.Add(new Route("test/testcase", new WsRouteHandler<TestcaseHandler>()));
+            routes.Add(new Route("test/practice", new WsRouteHandler<PracticeHandler>()));
 
 			// Web Pages
             routes.MapRoute(
@@ -28,6 +31,11 @@ namespace WebDaifugo
                 name: "Entry",
                 url: "Entry/{rule}/{id}",
                 defaults: new { controller = "Game", action = "Entry" }
+            );
+            routes.MapRoute(
+                name: "Watch",
+                url: "Watch/{id}",
+                defaults: new { controller = "Game", action = "Watch" }
             );
             routes.MapRoute(
                 name: "Default",

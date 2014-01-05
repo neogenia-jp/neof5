@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Daifugo.Bases
 {
-    public interface IObserberContext
+    public interface IObserverContext
     {
         /// <summary>
         /// ゲーム全体のコンテキスト
@@ -15,7 +15,7 @@ namespace Daifugo.Bases
     /// <summary>
     /// あるプレイヤーから見たゲームの情況
     /// </summary>
-    public interface IPlayerContext : IObserberContext
+    public interface IPlayerContext : IObserverContext
     {
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Daifugo.Bases
     /// <summary>
     /// モニターから見たゲームの情況
     /// </summary>
-    public interface IMonitorContext : IObserberContext
+    public interface IMonitorContext : IObserverContext
     {
 
         // 全員の手札

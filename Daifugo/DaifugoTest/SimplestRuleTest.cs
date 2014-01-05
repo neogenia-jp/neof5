@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Daifugo;
 using Daifugo.Cards;
 using Daifugo.Rules;
-using Daifugo.Players;
+using Daifugo.Observers;
 using Daifugo.Bases;
 using Daifugo.GameImples;
 

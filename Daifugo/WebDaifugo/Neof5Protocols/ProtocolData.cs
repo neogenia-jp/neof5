@@ -30,6 +30,22 @@ namespace WebDaifugo.Neof5Protocols
             };
         }
 
+        public ProtocolData(int playerNum, string kind, IMonitorContext ctx)
+        {
+            _data = new
+            {
+                YourNum = playerNum,
+                Kind = kind,
+                Teban = ctx.GameContext.Teban,
+                IsKakumei = ctx.GameContext.IsKakumei,
+                PlayerInfo = ctx.GameContext.PlayerInfo,
+                AllDeck = ctx.AllDeck.Select(deck => deck.ToCardsetString()),
+                Ba = ctx.GameContext.Ba.Select(cards => cards.ToCardsetString()),
+                Yama = ctx.GameContext.Yama.JoinString(" "),
+                History = ctx.GameContext.History.Select(gh=>gh.ToString()),
+            };
+        }
+
         public ProtocolData(ICheckResult result)
         {
             _data = new

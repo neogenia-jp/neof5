@@ -19,6 +19,7 @@ namespace WebDaifugo.Controllers
             ViewBag.Name = string.IsNullOrWhiteSpace(name) ? "あなた" : name;
             ViewBag.Rule = rule;
             ViewBag.AutoStart = true;
+            ViewBag.Monitor = false;
             return View();
         }
 
@@ -28,6 +29,15 @@ namespace WebDaifugo.Controllers
             ViewBag.Name = name;
             ViewBag.Rule = rule;
             ViewBag.AutoStart = false;
+            ViewBag.Monitor = false;
+            return View("Index");
+        }
+
+        public ActionResult Watch(string id)
+        {
+            ViewBag.RoomId = id;
+            ViewBag.AutoStart = false;
+            ViewBag.Monitor = true;
             return View("Index");
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Daifugo.Bases;
 using Daifugo.Cards;
-using Daifugo.Players;
+using Daifugo.Observers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,7 +46,8 @@ namespace DaifugoTest
 
         public virtual void ProcessTurn(IPlayerContext ctx) { callback(this, "ProcessTurn", ctx); }
 
-        public void BindEvents(GameEvents evt)
+        public void unbindEvents(GameEvents evt) { }
+        public void bindEvents(GameEvents evt)
         {
             evt.agari += (arg) => this.Agari(arg(this) as IPlayerContext);
             evt.cardDistributed += (arg) => this.CardDistributed(arg(this) as IPlayerContext);

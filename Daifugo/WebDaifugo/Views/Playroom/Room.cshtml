@@ -16,7 +16,7 @@
 				<tr>
 					<th>プレイヤー名</th>
 					<th>総合得点</th>
-					<th>現ラウンドの得点</th>
+					<th>直前ラウンドの得点</th>
 					<th>大富豪</th>
 					<th>富豪</th>
 					<th>平民</th>
@@ -36,7 +36,7 @@
 				</tr>
 				}
 			</table>
-			<a class="btn btn-success" href="monitor/@Model.RoomID">観戦する</a>
+			<a class="btn btn-success" id="btn_watch">観戦する</a>
 		</div>
 		} else {
 			<h3>空き</h3>
@@ -58,19 +58,27 @@
 		} else {
 			$('#ok').fadeIn();
 		}
-	});
-	
-	function entryNewWindow(rule,roomid,name) {
-		window.open('/entry/'+rule+'/'+ roomid + '?name='+name, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');  
-	}
 
-	$('#btn_entry').click(function () {
-		var name = $('#name').val();
-		if (!name) {
-			alert('名前を入力してください。');
-			return;
+		function entryNewWindow(rule, roomid, name) {
+			window.open('/entry/' + rule + '/' + roomid + '?name=' + name, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');
 		}
-		entryNewWindow('@ViewBag.Rule', '@ViewBag.RoomID', name);
+
+		function watchNewWindow(roomid) {
+			window.open('/watch/' + roomid, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');
+		}
+
+		$('#btn_entry').click(function () {
+			var name = $('#name').val();
+			if (!name) {
+				alert('名前を入力してください。');
+				return;
+			}
+			entryNewWindow('@ViewBag.Rule', '@ViewBag.RoomID', name);
+		});
+		$('#btn_watch').click(function () {
+			watchNewWindow('@ViewBag.RoomID');
+		});
 	});
+
 </script>
 }

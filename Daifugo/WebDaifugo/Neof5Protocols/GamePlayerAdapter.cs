@@ -11,7 +11,7 @@ using WebDaifugo.Basis;
 
 namespace WebDaifugo.Neof5Protocols
 {
-    internal class GamePlayerAdapter : IRemoteGamePlayer
+    internal class GamePlayerAdapter : IRemoteGamePlayer, ITweetListener
     {
         Action<string> _sendFunc;
         private DaifugoPlayRoom room = null;
@@ -31,6 +31,11 @@ namespace WebDaifugo.Neof5Protocols
             playerNum = room.Master.NumOfPlayers;
         }
 
+		/// <summary>
+		/// 再接続
+		/// </summary>
+		/// <param name="playerName"></param>
+		/// <param name="sendFunc"></param>
         public void Reconnect(string playerName, Action<string> sendFunc) { 
             _sendFunc = sendFunc;
             this.playerName = playerName;
@@ -42,10 +47,21 @@ namespace WebDaifugo.Neof5Protocols
             }
         }
 
+		/// <summary>
+		/// 切断
+		/// </summary>
         public void Disconnect() { _sendFunc = null; }
 
+		/// <summary>
+		/// 接続されているかどうか
+		/// </summary>
         public bool IsConnected { get { return _sendFunc != null; } }
 
+		/// <summary>
+		/// クライアントメッセージの処理
+		/// </summary>
+		/// <param name="jsonObj"></param>
+		/// <returns></returns>
         public ProtocolData ProcMessage(JObject jsonObj)
         {
             string kind = null;
@@ -136,10 +152,10 @@ namespace WebDaifugo.Neof5Protocols
 
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
         {
-            room.Master.PutCards(this, DeckGenerator.FromCardsetString(""));
+            room.Master.PutCards(this, null);
         }
 
-        void CardsArePut(IPlayerContext ctx)
+        public void CardsArePut(IPlayerContext ctx)
         {
             Send(new Neof5Protocols.ProtocolData(playerNum, "CardsArePut", ctx));
         }
@@ -175,17 +191,18 @@ namespace WebDaifugo.Neof5Protocols
         }
 
 
-        public void BindEvents(GameEvents evt)
+        public void bindEvents(GameEvents evt) { ((IGamePlayer)this).BindEvents(evt); }
+        public void unbindEvents(GameEvents evt) { ((IGamePlayer)this).UnbindEvents(evt); }
+
+        public void Tweet(string message)
         {
-            evt.agari += (arg) => this.Agari(arg(this) as IPlayerContext);
-            evt.cardDistributed += (arg) => this.CardDistributed(arg(this) as IPlayerContext);
-            evt.cardsArePut += (arg) => this.CardsArePut(arg(this) as IPlayerContext);
-            evt.cardSwapped += (arg) => this.CardSwapped(arg(this) as IPlayerContext);
-            evt.finish += (arg) => this.Finish(arg(this) as IPlayerContext);
-            evt.kakumei += (arg) => this.Kakumei(arg(this) as IPlayerContext);
-            evt.nagare += (arg) => this.Nagare(arg(this) as IPlayerContext);
-            evt.start += (arg) => this.Start(arg(this) as IPlayerContext);
-            evt.thinking += (arg) => this.Thinking(arg(this) as IPlayerContext);
+            if (_sendFunc != null)
+            {
+                JObject json = new JObject();
+                json["Kind"] = "Tweet";
+                json["Message"] = message;
+                _sendFunc(json.ToString());
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Daifugo.Players
+namespace Daifugo.Observers
 {
     public class PoorPlayer : BasePlayer
     {
@@ -57,6 +57,5 @@ namespace Daifugo.Players
             return null; // 出せるカードがないのでパス
         }
 
-        public override void BindEvents(GameEvents evt) { }
     }
 }

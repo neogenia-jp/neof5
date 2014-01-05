@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Daifugo.Utils;
 using Daifugo.Rules;
 using Daifugo.Bases;
-using Daifugo.Players;
+using Daifugo.Observers;
 
 namespace Daifugo.GameImples
 {
@@ -20,7 +20,9 @@ namespace Daifugo.GameImples
         GameContext context;
         readonly IDictionary<IGamePlayer, PlayerContext> playerContexts = new Dictionary<IGamePlayer, PlayerContext>();
 
-        readonly List<IGameMonitor> observers = new List<IGameMonitor>();
+        readonly List<IGameEventListener> observers = new List<IGameEventListener>();
+        public IEnumerable<IGameEventListener> Observers { get { foreach (var o in observers) yield return o; } }
+
         readonly IMonitorContext monitorCtx = null;
         public bool IsPlaing { get; private set; }
 
@@ -63,8 +65,8 @@ namespace Daifugo.GameImples
             }
         }
 
-        public void AddObserver(IGameMonitor o) { observers.Add(o); o.BindEvents(this); }
-        public void RemoveObsrver(IGameMonitor o) { observers.Remove(o); /* TODO */ }
+        public void AddObserver(IGameEventListener o) { observers.Add(o); o.bindEvents(this); }
+        public void RemoveObsrver(IGameEventListener o) { observers.Remove(o); o.unbindEvents(this); }
 
         private void _broadCastForPlayers(Action<IGamePlayer, IPlayerContext> action)
         {
@@ -74,16 +76,17 @@ namespace Daifugo.GameImples
             }
         }
 
-        private void _broadCastForMonitors(Action<IGameMonitor, IMonitorContext> action)
+        private void _broadCastForMonitors(Action<IGameEventListener, IMonitorContext> action)
         {
             observers.ForEach(o=>action(o, monitorCtx));
         }
 
-        public IObserberContext _getContext(IGameObserver o)
+        public IObserverContext _getContext(IGameEventListener o)
         {
-            if (o is IGameMonitor) return monitorCtx;
-            else if (o is IGamePlayer) return playerContexts[(IGamePlayer)o];
-            return null;
+            if (o==null) throw new ArgumentNullException();
+            if (o is IGamePlayer) return playerContexts[(IGamePlayer)o];
+            else if (o is IGameEventListener) return monitorCtx;
+            throw new ArgumentException("Specified GameListener type is unknonw: " + o.GetType());
         }
 
         private void _broadcast(Action<GameEvents,GameEvents.getcontext> action)

@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Daifugo.Players
+namespace Daifugo.Observers
 {
+    using ContextType = IPlayerContext;
+
     public abstract class BasePlayer : IGamePlayer
     {
         public string Name { get; protected set; }
@@ -19,59 +21,34 @@ namespace Daifugo.Players
             _putCardCallback = putCardCallback;
         }
 
-        ///// <summary>
-        ///// トリック開始通知
-        ///// </summary>
-        ///// <param name="ctx"></param>
-        //public virtual void Start(IPlayerContext ctx) { }
-
-        //public virtual void CardDistributed(IPlayerContext ctx){}
-
-        //public virtual void CardSwapped(IPlayerContext ctx){}
-
-        //public virtual void Thinking(IPlayerContext ctx){}
-
         /// <summary>
         /// 手番がまわってきた
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="cards"></param>
-        public virtual void ProcessTurn(IPlayerContext ctx) { _putCardCallback(_TurnCame(ctx)); }
+        public virtual void ProcessTurn(ContextType ctx) { _putCardCallback(_TurnCame(ctx)); }
 
-        protected abstract IEnumerable<Card> _TurnCame(IPlayerContext ctx);
+        protected abstract IEnumerable<Card> _TurnCame(ContextType ctx);
 
-        ///// <summary>
-        ///// 手番の人がカードを捨てた
-        ///// </summary>
-        ///// <param name="ctx"></param>
-        ///// <param name="cards"></param>
-        //public virtual void CardsArePut(IPlayerContext ctx) { }
+        public virtual void Start(ContextType ctx){}
 
-        ///// <summary>
-        ///// 革命がおこった
-        ///// </summary>
-        ///// <param name="ctx"></param>
-        //public virtual void Kakumei(IPlayerContext ctx) { }
+        public virtual void CardDistributed(ContextType ctx) { }
 
-        ///// <summary>
-        ///// 流れた
-        ///// </summary>
-        ///// <param name="ctx"></param>
-        //public virtual void Nagare(IPlayerContext ctx) { }
-        
-        ///// <summary>
-        ///// 手番の人が上がった
-        ///// </summary>
-        ///// <param name="ctx"></param>
-        //public virtual void Agari(IPlayerContext ctx) { }
+        public virtual void CardSwapped(ContextType ctx) { }
 
-        ///// <summary>
-        ///// トリック終了通知
-        ///// </summary>
-        ///// <param name="ctx"></param>
-        //public virtual void Finish(IPlayerContext ctx) { }
+        public virtual void Thinking(ContextType ctx) { }
 
+        public virtual void CardsArePut(ContextType ctx) { }
 
-        public abstract void BindEvents(GameEvents evt);
+        public virtual void Kakumei(ContextType ctx) { }
+
+        public virtual void Nagare(ContextType ctx) { }
+
+        public virtual void Agari(ContextType ctx) { }
+
+        public virtual void Finish(ContextType ctx) { }
+
+        public virtual void bindEvents(GameEvents evt) { ((IGameMonitor)this).BindEvents(evt); }
+        public virtual void unbindEvents(GameEvents evt) { ((IGameMonitor)this).UnbindEvents(evt); }
     }
 }

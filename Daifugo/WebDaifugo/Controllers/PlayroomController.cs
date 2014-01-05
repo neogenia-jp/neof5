@@ -76,5 +76,12 @@ namespace WebDaifugo.Controllers
             return View();
         }
 
+
+        public ActionResult Monitor(string id)
+        {
+            ViewBag.RoomId = id;
+            return View();
+        }
+
     }
 }

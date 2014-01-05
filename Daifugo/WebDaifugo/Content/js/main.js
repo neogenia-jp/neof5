@@ -10,6 +10,7 @@ window.onload = function () {
     var gPlayername = document.getElementById('name').value;
     var gRule = document.getElementById('rule').value;
     var gAutostart = document.getElementById('autostart').value;
+    var gMonitor = document.getElementById('monitor').value;
 
     // ============================== Variables ==============================
 
@@ -437,15 +438,19 @@ window.onload = function () {
             },
 
             // プレイヤー情報の設定（上書き）
-            setPlayerInfo: function (playerInfoArr, myDeck, teban) {
+            setPlayerInfo: function (playerInfoArr, deckObj, teban) {
                 for (var i = 0; i < playerInfoArr.length; i++) {
                     var player = this.players[i];
                     if (!player) return;
                     player.info = playerInfoArr[i];
-                    if (i == this.mainPlayerNum) {
-                        player.deck.replaceCards(myDeck);
+                    if (Array.isArray(deckObj)) {
+                    	player.deck.replaceCards(deckObj[i]);
                     } else {
-                        player.deck.toBacksideAll(playerInfoArr[i].HavingCardCount);
+                    	if (i == this.mainPlayerNum && deckObj) {
+                    		player.deck.replaceCards(deckObj);
+                    	} else {
+                    		player.deck.toBacksideAll(playerInfoArr[i].HavingCardCount);
+                    	}
                     }
                     this.playerInfoBoxes[i].setInfo(playerInfoArr[i], teban==i);
                 }
@@ -602,7 +607,7 @@ window.onload = function () {
             startButton.y = GAME_H / 2;
             //startButton.font = '28pt sans-serif';
             startButton.ontouchend = function () { SendStart(); }
-            scene.addChild(startButton);
+            if (!gMonitor) scene.addChild(startButton);
            
 			// 開始処理
             function SendStart() {
@@ -664,7 +669,9 @@ window.onload = function () {
 
             // Webソケット接続
             try {
-                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + '/play/' + gRule + '/' + gRoomid + '?name=' + gPlayername);
+            	var path = gMonitor ? '/monitor/' + gRoomid
+					                : '/play/' + gRule + '/' + gRoomid + '?name=' + gPlayername;
+                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + path);
                 socket.onerror = onError;
                 socket.onopen = onOpen;
                 socket.onclose = onClose;
@@ -673,7 +680,7 @@ window.onload = function () {
 
             // Webソケットハンドラ
             function onOpen(evt) { console.debug('connected.'); }
-            function onClose(evt) { console.debug('closed.'); }
+            function onClose(evt) { console.debug('closed.'); gameIno.text = '接続されていません'; }
             function onError(evt) { console.error('websocket error! '); }
             function onMessage(evt) {
                 console.debug("receive data=%O", evt.data);
@@ -695,7 +702,7 @@ window.onload = function () {
                 		pm.doLayout();  // 手札の配置
                 	}
 
-                	pm.setPlayerInfo(obj.PlayerInfo, obj.Deck, obj.Teban);  // 手札、プレイヤー情報を更新
+                	pm.setPlayerInfo(obj.PlayerInfo, obj.AllDeck||obj.Deck, obj.Teban);  // 手札、プレイヤー情報を更新
                 	yama.setYamaCards(obj.Yama.split(' '));
 
                 	var withAnim = false;
@@ -777,7 +784,7 @@ window.onload = function () {
             return scene;
         };
 
-        if (gPlayername && gRoomid) {
+        if (gMonitor || gPlayername && gRoomid) {
         	game_.replaceScene(mainScene());
         } else {
         	game_.replaceScene(titleScene());

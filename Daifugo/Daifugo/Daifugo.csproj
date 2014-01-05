@@ -59,8 +59,8 @@
     <Compile Include="Bases\IGamePlayer.cs" />
     <Compile Include="GameImples\GameContext.cs" />
     <Compile Include="GameImples\GameMaster.cs" />
+    <Compile Include="GameImples\MonitorContext.cs" />
     <Compile Include="Observers\BasePlayer.cs" />
-    <Compile Include="Observers\BaseObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bases\IRule.cs" />
     <Compile Include="Rules\KaidanRule.cs" />
@@ -69,7 +69,7 @@
     <Compile Include="Bases\PlayerRank.cs" />
     <Compile Include="Rules\RuleFactory.cs" />
     <Compile Include="Utils\CollectionUtils.cs" />
-    <Compile Include="Bases\IPlayerContext.cs" />
+    <Compile Include="Bases\IObserverContext.cs" />
     <Compile Include="Observers\PoorPlayer.cs" />
   </ItemGroup>
   <ItemGroup />

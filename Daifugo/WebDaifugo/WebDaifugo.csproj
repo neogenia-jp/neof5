@@ -128,6 +128,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Basis\ITweetListener.cs" />
     <Compile Include="Neof5Protocols\GamePlayerAdapter.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -149,6 +150,9 @@
     <Compile Include="AppClasses\PlayRoomsManager.cs" />
     <Compile Include="Basis\IRemoteGamePlayer.cs" />
     <Compile Include="Neof5Protocols\ProtocolData.cs" />
+    <Compile Include="WsHandlers\ConnectionTestHandler.cs" />
+    <Compile Include="WsHandlers\PracticeHandler.cs" />
+    <Compile Include="WsHandlers\TestcaseHandler.cs" />
     <Compile Include="WsHandlers\WstRouteHandler.cs" />
     <Compile Include="WsHandlers\PlayerHandler.cs" />
     <Compile Include="WsHandlers\MoniterHandler.cs" />

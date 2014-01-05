@@ -1,16 +1,14 @@
 ﻿using Daifugo.Bases;
 using Daifugo.GameImples;
-using Daifugo.Players;
-using System;
+using Daifugo.Observers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using WebDaifugo.Basis;
 using WebDaifugo.Models;
 
 namespace WebDaifugo.AppClasses
 {
-    public class DaifugoPlayRoom : IPlayRoomModel, IDisposable, IGameMonitor
+    public class DaifugoPlayRoom : IGameEventListener, IPlayRoomModel 
     {
         public GameMaster Master { get; private set; }
         public string RoomID { get; private set;  }
@@ -38,8 +36,7 @@ namespace WebDaifugo.AppClasses
 			int i=0;
             foreach (var pi in _ctx.PlayerInfo)
             {
-                var s = _standings.ElementAt(i);
-                s.Value.AddGameResult(pi.Ranking);
+                _standings.Values.ElementAt(i++).AddGameResult(pi.Ranking);
             }
         }
 
@@ -64,6 +61,18 @@ namespace WebDaifugo.AppClasses
             return p as IRemoteGamePlayer;
         }
 
+        public void Tweet(string message)
+        {
+            foreach (ITweetListener pl in _players.Values.Where((p) => p is ITweetListener))
+            {
+                pl.Tweet(message);
+            }
+            foreach (ITweetListener mn in Master.Observers)
+            {
+                mn.Tweet(message);
+            }
+        }
+
         public void AddObserver(IGameMonitor m)
         {
             Master.AddObserver(m);
@@ -74,10 +83,16 @@ namespace WebDaifugo.AppClasses
             Master.RemoveObsrver(m);
         }
 
-        public void BindEvents(GameEvents evt)
+        public void bindEvents(GameEvents evt)
         {
             evt.finish += OnGameFinish;
         }
+
+        public void unbindEvents(GameEvents evt)
+        {
+            evt.finish -= OnGameFinish;
+        }
+
 
         public void DoComplementPlayers(int num)
         {
