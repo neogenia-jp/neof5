@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bases\BaseGameContext.cs" />
+    <Compile Include="Bases\ICardDistributer.cs" />
     <Compile Include="Bases\GameEvents.cs" />
     <Compile Include="Bases\GameHistory.cs" />
     <Compile Include="Bases\IGameObserver.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Bases\CheckResult.cs" />
     <Compile Include="Bases\IGameContext.cs" />
     <Compile Include="Bases\IGamePlayer.cs" />
+    <Compile Include="GameImples\DefaultCardDistributer.cs" />
     <Compile Include="GameImples\GameContext.cs" />
     <Compile Include="GameImples\GameMaster.cs" />
     <Compile Include="GameImples\MonitorContext.cs" />

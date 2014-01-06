@@ -26,17 +26,20 @@ namespace Daifugo.GameImples
         readonly IMonitorContext monitorCtx = null;
         public bool IsPlaing { get; private set; }
 
+        public ICardDistributer CardDistributer { get; set; }
+
         //GameEvents eventTable = new GameEvents();
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="context"></param>
-        internal GameMaster(GameContext context)
+        internal GameMaster(GameContext context, ICardDistributer cardDistributer=null)
         {
             this.context = context;
             monitorCtx = new BaseMonitorContext(context, _getAllDeck);
             IsPlaing = false;
+            CardDistributer = cardDistributer ?? new DefaultCardDistributer();
         }
 
         public void Dispose()
@@ -104,49 +107,28 @@ namespace Daifugo.GameImples
             Start(_getContext);
             //_broadCastForPlayers((p, pc) => p.Start(pc));
 
-            // カードを生成し、シャッフルする
-            List<Card> cards = new List<Card>(DeckGenerator.DeckWithJoker());
-            cards.Shuffle();
-
-            // カードの偏り
-            var forth = rand.Next(13*4)+1;  // 1/4の確立で4枚カードがかたよる。
-            if (forth <= 13)
+            // カードを生成し、配布する
             {
-                foreach (Suit suit in Enum.GetValues(typeof(Suit)))
+                var ret = CardDistributer.Distribute(context.PlayerInfo, DeckGenerator.DeckWithJoker());
+
+				// 1枚ずつカードを手札に移し替え、5枚配るごとに通知する。
+                while (ret.Any(l => l.Count() > 0))
                 {
-                    var c = new Card(suit, forth);
-                    cards.Remove(c);
-                    cards.Insert(0, c);
-                }
-                forth = rand.Next(13 * 4) + 1;  // さらに1/4の確立で4枚カードがかたよる。
-                if (forth <= 13)
-                {
-                    var p = rand.Next(5) * 5;
-                    foreach (Suit suit in Enum.GetValues(typeof(Suit)))
+                    for (int i = 0; i < ret.Length; i++)
                     {
-                        var c = new Card(suit, forth);
-                        cards.Remove(c);
-                        cards.Insert(p, c);
+                        var pi = context.PlayerInfo.ElementAt(i);
+                        var l = ret[i];
+                        if (l.Count <= 0) continue;
+                        var pc = playerContexts.ElementAt(i).Value;
+                        pc._deck.Add(l[0]);
+                        l.RemoveAt(0);
+                    }
+                    if (playerContexts.ElementAt(0).Value._deck.Count % 5 == 0)
+                    {
+                    _wait();
+                    CardDistributed(_getContext);
                     }
                 }
-            }
-
-            // カードを配る
-            for (int i = 0, pi = 0; i < cards.Count; i ++, pi++)
-            {
-                // カード配布通知(5枚ごと)
-                if (i > 0 && i % (5 * context._players.Count) == 0)
-                {
-                    _wait();
-                    //_broadcast((evt, f) => evt.CardDistributed(f));
-                    CardDistributed(_getContext);
-                    //context._players.ForEach(px => {
-                    //    px.CardDistributed(playerContexts[px]);
-                    //});
-                }
-
-                var player = context._players[pi % context._players.Count];
-                playerContexts[player]._deck.Add(cards[i]);
             }
 
             // 最終的にカード配布通知。
