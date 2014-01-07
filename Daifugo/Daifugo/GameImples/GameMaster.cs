@@ -246,6 +246,11 @@ namespace Daifugo.GameImples
                     return new CheckError("手番が違います。");
                 }
 
+                if (!playerContexts.ContainsKey(player))
+                {
+                    return new CheckError("コンテキストがありません");
+                }
+
                 var pcontext = playerContexts[player];
                 var nextTeban = _getNextTeban();
 

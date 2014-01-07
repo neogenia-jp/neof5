@@ -13,7 +13,8 @@ namespace WebDaifugo.Neof5Protocols
 {
     internal class GamePlayerAdapter : IRemoteGamePlayer, ITweetListener
     {
-        Action<string> _sendFunc;
+        internal int TurnTimeoutSec = 30;
+        private Action<string> _sendFunc;
         private DaifugoPlayRoom room = null;
         private int playerNum = 0;
         private string playerName;
@@ -129,7 +130,7 @@ namespace WebDaifugo.Neof5Protocols
             if (IsConnected)
             {
                 // タイマースタート
-                _startTimer(30 * 1000);
+                _startTimer(TurnTimeoutSec * 1000);
             }
             else
             {

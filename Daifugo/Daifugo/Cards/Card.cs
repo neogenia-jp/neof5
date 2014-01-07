@@ -21,7 +21,7 @@ namespace Daifugo.Cards
         internal Card(Suit s, int n)
         {
             if (s == Suit.JKR) n = 0;
-            else if (n < 1 || 13 < n) throw new ArgumentOutOfRangeException();
+            else if (n < 1 || 13 < n) throw new ArgumentOutOfRangeException("Illegual number.");
             xx = (byte)(((byte)s) | n);
         }
 

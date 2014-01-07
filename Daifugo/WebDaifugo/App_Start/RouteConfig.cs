@@ -18,8 +18,8 @@ namespace WebDaifugo
             routes.Add(new Route("monitor/{id}", new WsRouteHandler<MoniterHandler>()));
             routes.Add(new Route("play/{rule}/{id}", new WsRouteHandler<PlayerHandler>()));
             routes.Add(new Route("test/connection", new WsRouteHandler<ConnectionTestHandler>()));
-            routes.Add(new Route("test/testcase", new WsRouteHandler<TestcaseHandler>()));
-            routes.Add(new Route("test/practice", new WsRouteHandler<PracticeHandler>()));
+            routes.Add(new Route("test/ruletest/{id}", new WsRouteHandler<RuleTestHandler>()));
+            routes.Add(new Route("test/practice/{id}", new WsRouteHandler<PracticeHandler>()));
 
 			// Web Pages
             routes.MapRoute(

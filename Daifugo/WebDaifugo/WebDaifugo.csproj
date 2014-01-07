@@ -152,7 +152,7 @@
     <Compile Include="Neof5Protocols\ProtocolData.cs" />
     <Compile Include="WsHandlers\ConnectionTestHandler.cs" />
     <Compile Include="WsHandlers\PracticeHandler.cs" />
-    <Compile Include="WsHandlers\TestcaseHandler.cs" />
+    <Compile Include="WsHandlers\RuleTestHandler.cs" />
     <Compile Include="WsHandlers\WstRouteHandler.cs" />
     <Compile Include="WsHandlers\PlayerHandler.cs" />
     <Compile Include="WsHandlers\MoniterHandler.cs" />
@@ -241,9 +241,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Playroom\Index.cshtml" />
     <Content Include="Views\Playroom\QuickPlay.cshtml" />
-    <Content Include="Views\Playroom\TestPlay.cshtml" />
+    <Content Include="Views\Playroom\RuleTest.cshtml" />
     <Content Include="Views\Game\Index.cshtml" />
     <Content Include="Views\Playroom\Room.cshtml" />
+    <Content Include="Views\Playroom\Practice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -48,7 +48,7 @@ namespace Daifugo.Observers
 
         public virtual void Finish(ContextType ctx) { }
 
-        public virtual void bindEvents(GameEvents evt) { ((IGameMonitor)this).BindEvents(evt); }
-        public virtual void unbindEvents(GameEvents evt) { ((IGameMonitor)this).UnbindEvents(evt); }
+        public virtual void bindEvents(GameEvents evt) { ((IGamePlayer)this).BindEvents(evt); }
+        public virtual void unbindEvents(GameEvents evt) { ((IGamePlayer)this).UnbindEvents(evt); }
     }
 }

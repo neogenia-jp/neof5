@@ -56,8 +56,20 @@ namespace WebDaifugo.Controllers
             return View();
         }
 
-        public ActionResult TestPlay()
+        public ActionResult RuleTest()
         {
+            var sid = PlayRoomsManager.MakeTempSession(RuleTestHandler.ROOM_ID_PREFIX);
+            PlayRoomsManager.GetOrCreate(sid);
+            ViewBag.RoomId = sid;
+            return View();
+        }
+
+        public ActionResult Practice(string id)
+        {
+            var rule = id;
+            var sid = PlayRoomsManager.MakeTempSession(PracticeHandler.ROOM_ID_PREFIX);
+            PlayRoomsManager.GetOrCreate(sid, rule);
+            ViewBag.RoomId = sid;
             return View();
         }
 
@@ -75,7 +87,6 @@ namespace WebDaifugo.Controllers
 
             return View();
         }
-
 
         public ActionResult Monitor(string id)
         {

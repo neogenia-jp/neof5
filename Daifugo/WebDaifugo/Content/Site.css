@@ -16,8 +16,8 @@
 /* ----------------------- タイル */
 .tile {
     float: left;
-    width: 150px;
-    height: 150px;
+    width: 130px;
+    height: 130px;
     margin: 4px;
     padding: 4px;
     text-decoration: none;
@@ -42,14 +42,14 @@
 .tile strong {
     text-align: center;
 	margin: auto;
-	font-size: 200%;
+	font-size: 180%;
 	width: 100%; line-height: 120px;
 	display: block;
 }
 
 .tile p {
     color: #f3f3f3;
-    width: 142px;
+    width: 122px;
     padding: 4px 0 4px 8px;
 	margin: 0;
     position: absolute; bottom: 0; left: 0;

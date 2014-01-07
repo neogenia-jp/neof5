@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "ルールテストのための一時的なプレイルーム";
+}
+<div class="row">
+    <div class="col-sm-10 col-sm-offset-1">
+
+            <h1>@ViewBag.Title</h1>
+            <p>
+				ルールテストのためのプレイルームが作成されました。<br />
+				<strong>接続URL:</strong>
+				<pre>ws://@(HttpContext.Current.Request.Url.Host):@(HttpContext.Current.Request.Url.Port)/test/ruletest/@ViewBag.RoomId?name={ProgramName}</pre>
+				このURLにプログラムから接続し、テストを実施してください。<br />
+				テストが実行されている様子を、実際にゲーム画面で観戦することもできます。
+            </p>
+            <p id="ok" style="display:none"><button id="btn_watch" class="btn btn-success btn-lg" role="button">テストの実行状況を観戦する</button></p>
+			<p id="ng" style="display:none" class="danger">ご利用のブラウザでは観戦出来ません。</p>
+    </div>
+</div>
+
+@section Scripts{
+<script type="text/javascript">
+	$(function () {
+		if (!WebSocket) {
+			$('#ng').fadeIn();
+			alert('NG');
+		} else {
+			$('#ok').fadeIn();
+		}
+
+		function watchNewWindow(roomid) {
+			window.open('/watch/' + roomid, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');
+		}
+
+		$('#btn_watch').click(function () {
+			watchNewWindow('@ViewBag.RoomID');
+		});
+	});
+
+</script>
+}

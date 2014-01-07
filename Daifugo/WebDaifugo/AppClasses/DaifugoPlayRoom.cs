@@ -73,12 +73,12 @@ namespace WebDaifugo.AppClasses
             }
         }
 
-        public void AddObserver(IGameMonitor m)
+        public void AddObserver(IGameEventListener m)
         {
             Master.AddObserver(m);
         }
         
-        public void RemoveObserver(IGameMonitor m)
+        public void RemoveObserver(IGameEventListener m)
         {
             Master.RemoveObsrver(m);
         }

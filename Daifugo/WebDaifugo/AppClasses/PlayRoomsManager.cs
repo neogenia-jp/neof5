@@ -10,6 +10,7 @@ namespace WebDaifugo.AppClasses
     public class PlayRoomsManager
     {
         private static Dictionary<string, DaifugoPlayRoom> pool = new Dictionary<string, DaifugoPlayRoom>();
+        private static Random rand = new Random();
 
         public static DaifugoPlayRoom GetOrCreate(string sessionId, string rule="A")
         {
@@ -39,12 +40,11 @@ namespace WebDaifugo.AppClasses
             }
         }
 
-        public static string MakeTempSession()
+        public static string MakeTempSession(string prefix="")
         {
-            int sessionId = 10000;
-            while (pool.Keys.Contains("" + sessionId)) sessionId++;
-            return "" + sessionId;
-        }
+            var sessionId = (prefix + rand.Next(10000)).ToString();
+            return pool.Keys.Contains(sessionId) ? MakeTempSession() : sessionId;
+        } 
 
         public static DaifugoPlayRoom Get(string sessionid)
         {

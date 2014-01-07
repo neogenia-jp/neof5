@@ -34,9 +34,10 @@ namespace WebDaifugo.WsHandlers
 
             if (string.IsNullOrWhiteSpace(playerName))
             {
-                Send("URL Parameter 'name' is not specified.");
+                SendMessageAsJson("URL Parameter 'name' is not specified.");
                 Close();
             }
+            SendMessageAsJson("Congratulations!! You have successfully WebSocket connection. The current time is " + DateTime.UtcNow.ToLongTimeString() + " (UTC)");
         }
 
         public override void OnClose() { myTimer.Enabled = false; }
@@ -51,14 +52,25 @@ namespace WebDaifugo.WsHandlers
 
                 jsonObj["Kind"] = "ConnectionTest";
                 jsonObj["Message"] = "Hello " + playerName;
-                jsonObj["YourIP"] = base.WebSocketContext.UserHostAddress;
+                jsonObj["YourName"] = playerName;
 
                 Send(jsonObj.ToString());
             }
             catch (Exception e)
             {
-                Send(e.Message);
+                SendMessageAsJson(e.Message);
             }
         }
+
+        private void SendMessageAsJson(string msg)
+        {
+            JObject jsonObj = new JObject();
+
+            jsonObj["Kind"] = "ConnectionTest";
+            jsonObj["Message"] = msg;
+            jsonObj["YourName"] = playerName;
+
+            Send(jsonObj.ToString());
+        } 
     }
 }

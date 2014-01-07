@@ -14,6 +14,7 @@ using Daifugo.Observers;
 using System.Text.RegularExpressions;
 using WebDaifugo.AppClasses;
 using WebDaifugo.Models;
+using WebDaifugo.Basis;
 
 namespace WebDaifugo.WsHandlers
 {
@@ -49,7 +50,7 @@ namespace WebDaifugo.WsHandlers
                 }
 
                 room = PlayRoomsManager.GetOrCreate(sessionId, rule);
-                var key = CreatePlayerKey();
+                var key = this.WebSocketContext.CreatePlayerKey();
 
                 pAdapter = room.FindRemotePlayer(key) as GamePlayerAdapter;
                 if (pAdapter != null && !pAdapter.IsConnected)
@@ -100,8 +101,5 @@ namespace WebDaifugo.WsHandlers
             }
         }
 
-		private string CreatePlayerKey() {
-            return WebSocketContext.UserAgent + "\t" + WebSocketContext.UserHostAddress;
-        }
     }
 }
