@@ -680,7 +680,7 @@ window.onload = function () {
 
             // Webソケットハンドラ
             function onOpen(evt) { console.debug('connected.'); }
-            function onClose(evt) { console.debug('closed.'); gameIno.text = '接続されていません'; }
+            function onClose(evt) { console.debug('closed.'); gameInfo.text = '接続されていません'; }
             function onError(evt) { console.error('websocket error! '); }
             function onMessage(evt) {
                 console.debug("receive data=%O", evt.data);
