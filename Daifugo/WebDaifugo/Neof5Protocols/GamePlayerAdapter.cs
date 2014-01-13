@@ -97,14 +97,14 @@ namespace WebDaifugo.Neof5Protocols
             return null;
         }
 
-        internal void Send(ProtocolData wsp)
+        internal void Send(ProtocolData wsp, bool saved=true)
         {
+            string str = wsp.ToJson();
+			if (saved) lastSendData = str;
             if (_sendFunc != null)
             {
-                string str = wsp.ToJson();
                 Debug.WriteLine("Send: " + str);
                 _sendFunc(str);
-                lastSendData = str;
             }
         }
 
