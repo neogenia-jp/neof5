@@ -671,7 +671,7 @@ window.onload = function () {
             try {
             	var path = gMonitor ? '/monitor/' + gRoomid
 					                : '/play/' + gRule + '/' + gRoomid + '?name=' + gPlayername;
-                socket = new WebSocket('ws://' + location.hostname + ':' + location.port + path);
+                socket = new WebSocket('ws://' + location.hostname + ':' + (location.port||80) + path);
                 socket.onerror = onError;
                 socket.onopen = onOpen;
                 socket.onclose = onClose;
