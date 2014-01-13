@@ -110,7 +110,7 @@ namespace Daifugo.Rules
             if (listcards.Count == 0) return ERROR_JOKER_AGARI;
 
             // 2あがり？
-            if (listcards.All(c => c.num == (context.IsKakumei ? 3 : 2))) return ERROR_2_AGARI;
+            if (listcards.Any(c => c.num == (context.IsKakumei ? 3 : 2))) return ERROR_2_AGARI;
 
             return CheckResults.Ok;
         }

@@ -171,12 +171,13 @@ namespace DaifugoTest
         public void Rule_CanAgari()
         {
             _ctx.IsKakumei = false;
-            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.CLB, 3)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.CLB, 3)));
             Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.JKR, 0, Suit.DIA, 4)));
             Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 1, Suit.JKR, 0, Suit.DIA, 1)));
             // 階段 
-            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 2, Suit.HRT, 13, Suit.HRT, 1)));
-            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 1, Suit.JKR, 0, Suit.DIA, 12, Suit.DIA, 2)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 12, Suit.HRT, 13, Suit.HRT, 1)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 1, Suit.JKR, 0, Suit.DIA, 12, Suit.DIA, 13)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.CLB, 4, Suit.CLB, 5, Suit.CLB, 3)));
             // ジョーカー
             Assert.AreEqual(KaidanRule.ERROR_JOKER_AGARI, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.JKR, 0)));
             Assert.AreEqual(KaidanRule.ERROR_JOKER_AGARI, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.JKR, 0, Suit.JKR, 0)));
@@ -184,6 +185,8 @@ namespace DaifugoTest
             Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 2)));
             Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 2, Suit.SPD, 2)));
             Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 2, Suit.JKR, 0, Suit.CLB, 2)));
+			// ２を含む階段
+            Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 2, Suit.DIA, 1, Suit.DIA, 13)));
         }
         
         [TestMethod]
@@ -194,15 +197,18 @@ namespace DaifugoTest
             Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.JKR, 0, Suit.DIA, 1)));
             Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 4, Suit.JKR, 0, Suit.DIA, 4)));
             // 階段 
-            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 3, Suit.HRT, 4, Suit.HRT, 5)));
-            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 5, Suit.JKR, 0, Suit.DIA, 4, Suit.DIA, 3)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.HRT, 6, Suit.HRT, 4, Suit.HRT, 5)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 5, Suit.JKR, 0, Suit.DIA, 4, Suit.DIA, 6)));
+            Assert.AreEqual(CheckResults.Ok, _rule.CanAgari(_ctx,DeckGenerator.Generate(Suit.DIA, 2, Suit.DIA, 1, Suit.DIA, 13)));
             // ジョーカー
             Assert.AreEqual(KaidanRule.ERROR_JOKER_AGARI, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.JKR, 0)));
             Assert.AreEqual(KaidanRule.ERROR_JOKER_AGARI, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.JKR, 0, Suit.JKR, 0)));
-            // ２あがり
+            // ３あがり
             Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.HRT, 3)));
             Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.DIA, 3, Suit.SPD, 3)));
             Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.DIA, 3, Suit.JKR, 0, Suit.CLB, 3)));
+			// ３を含む階段
+            Assert.AreEqual(KaidanRule.ERROR_2_AGARI, _rule.CanAgari(_ctx, DeckGenerator.Generate(Suit.CLB, 4, Suit.CLB, 5, Suit.CLB, 3)));
         }
     }
 }
