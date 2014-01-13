@@ -128,7 +128,7 @@ namespace DaifugoTest
         public void Rule_IsKaidan_場が階段のとき()
         {
             _ctx._history.Clear();
-            _ctx._history.Add(new HE_PutCards(0, DeckGenerator.FromCardsetString("S5 S6 S7")));
+            _ctx._history.Add(new HE_PutCards(0, DeckGenerator.FromCardsetString("H5 H6 H7")));
 
             _assertCheckPutCardsIsOK(DeckGenerator.FromCardsetString("S8 S9 S0"));
             _assertCheckPutCardsIsOK(DeckGenerator.FromCardsetString("D8 D9 D0"));
@@ -141,6 +141,7 @@ namespace DaifugoTest
             _assertCheckPutCardsIsNG(DeckGenerator.FromCardsetString("C8 H8 S8"), KaidanRule.ERROR_NOT_KAIDAN);
             // カードの数字が強い数字でない場合
             _assertCheckPutCardsIsNG(DeckGenerator.FromCardsetString("C6 C7 C8"), KaidanRule.ERR_NOT_STRONG);
+            _assertCheckPutCardsIsNG(DeckGenerator.FromCardsetString("S7 S8 S9"), KaidanRule.ERR_NOT_STRONG);
             _assertCheckPutCardsIsNG(DeckGenerator.FromCardsetString("C9 C7 C8"), KaidanRule.ERR_NOT_STRONG);
             _assertCheckPutCardsIsNG(DeckGenerator.FromCardsetString("JK C7 C8"), KaidanRule.ERR_NOT_STRONG);
         }

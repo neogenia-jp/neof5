@@ -51,7 +51,7 @@ namespace Daifugo.Rules
                         var hand = cards.ToList();
                         hand.ExtractJokers();
                         var handmin = hand.Min();
-                        if (handmin > bamax) return CheckResults.Ok;
+                        if (CompareCards(handmin, bamax, context.IsKakumei) > 0) return CheckResults.Ok;
                         return ERR_NOT_STRONG;
                     }
                     else { return ERROR_NOT_KAIDAN; }

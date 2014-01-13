@@ -76,30 +76,30 @@ namespace DaifugoTest
         [TestMethod]
         public void Rule_CompareCard_違う強さ()
         {
-            {  // 1 <=> 2
+            { // 1 <=> 2
                 Card c1 = new Card(Suit.CLB, 1);
                 Card c2 = new Card(Suit.CLB, 2);
-                Assert.AreEqual(1, _rule.CompareCards(c1, c2));
+                Assert.AreEqual(-1, _rule.CompareCards(c1, c2));
             }
             { // 1 <=> 13
                 Card c1 = new Card(Suit.CLB, 1);
                 Card c2 = new Card(Suit.HRT, 13);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2));
             }
             { // 2 <=> 3
                 Card c1 = new Card(Suit.SPD, 2);
                 Card c2 = new Card(Suit.HRT, 3);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2));
             }
             { // JK <=> 2
                 Card c1 = new Card(Suit.JKR, 0);
                 Card c2 = new Card(Suit.HRT, 2);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2));
             }
             { // JK <=> 3
                 Card c1 = new Card(Suit.JKR, 0);
                 Card c2 = new Card(Suit.HRT, 3);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2));
             }
         }
 
@@ -109,27 +109,27 @@ namespace DaifugoTest
             {  // 1 <=> 2
                 Card c1 = new Card(Suit.CLB, 1);
                 Card c2 = new Card(Suit.CLB, 2);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2, true));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2, true));
             }
             { // 1 <=> 13
                 Card c1 = new Card(Suit.CLB, 1);
                 Card c2 = new Card(Suit.HRT, 13);
-                Assert.AreEqual(1, _rule.CompareCards(c1, c2, true));
+                Assert.AreEqual(-1, _rule.CompareCards(c1, c2, true));
             }
             { // 2 <=> 3
                 Card c1 = new Card(Suit.SPD, 2);
                 Card c2 = new Card(Suit.HRT, 3);
-                Assert.AreEqual(1, _rule.CompareCards(c1, c2, true));
+                Assert.AreEqual(-1, _rule.CompareCards(c1, c2, true));
             }
             { // JK <=> 2
                 Card c1 = new Card(Suit.JKR, 0);
                 Card c2 = new Card(Suit.HRT, 2);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2, true));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2, true));
             }
             { // JK <=> 3
                 Card c1 = new Card(Suit.JKR, 0);
                 Card c2 = new Card(Suit.HRT, 3);
-                Assert.AreEqual(-1, _rule.CompareCards(c1, c2, true));
+                Assert.AreEqual(1, _rule.CompareCards(c1, c2, true));
             }
         }
 

@@ -56,12 +56,8 @@ namespace Daifugo.Rules
             if (!TryGetFirstCard(lastCards, ref baCard)) return ERR_INVALID_BA;
 
             // 場より強いカードか？
-            if (CompareCards(baCard, firstCard, context.IsKakumei) <= 0)
-            {
-                return ERR_NOT_STRONG;
-            }
-            
-            return CheckResults.Ok;
+            if (CompareCards(baCard, firstCard, context.IsKakumei) < 0) return CheckResults.Ok;
+            return ERR_NOT_STRONG;
         }
 
         /// <summary>
@@ -77,11 +73,11 @@ namespace Daifugo.Rules
             if (a.num == b.num) return 0;
 
             // 革命に関係なくジョーカーが最強
-            if (a.suit == Suit.JKR) return -1;
-            if (b.suit == Suit.JKR) return 1;
+            if (a.suit == Suit.JKR) return 1;
+            if (b.suit == Suit.JKR) return -1;
 
             // 数字で比較
-            int ret = a > b ? -1 :1;
+            int ret = a < b ? -1 :1;
             // 革命時は判定逆転
             return isKakumei ? -ret : ret;
         }
