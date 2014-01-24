@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "プレイルーム [" + ViewBag.RoomID + "]";
 }
+@section Meta {
+	<meta http-equiv="refresh" content="180">
+}
 <div class="container">
 
 <h2>@ViewBag.Title</h2>
@@ -9,10 +12,23 @@
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
 
-		@if (Model!=null && Model.Master.IsPlaing) {
-		<h3>現在の成績</h3>
+		@if (Model==null || Model.NumOfRounds==0) {
+			<h3>入出できます</h3>
+			<div>現在の入室人数：@(Model==null ? 0 : Model.Master.NumOfPlayers) 人</div>
+			<input type="text" id="name" maxlength="16" placeholder="名前" />
+			<a class="btn btn-primary" id="btn_entry">入室する</a>
+		} 
+
+		@if (Model !=null) {
+		<h3>ラウンド数</h3>
+		<div>
+			@Model.NumOfRounds 回目
+        </div>              
+
+		<h3>成績表</h3>
 		<div class="table-responsive">
 			<table class="table table-bordered">
+				<thead>
 				<tr>
 					<th>プレイヤー名</th>
 					<th>総合得点</th>
@@ -23,26 +39,26 @@
 					<th>貧民</th>
 					<th>大貧民</th>
 				</tr>
+				</thead>
+				<tbody>
 				@foreach (var item in Model.Standings) {
 				<tr>
 					<td>@item.PlayerName</td>
-					<td>@(item.TransferredPoint + item.RoundPoint)</td>
-					<td>@item.RoundPoint</td>
-					<td>@item.NumTimesDaifugo</td>
-					<td>@item.NumTimesFugo</td>
-					<td>@item.NumTimesHeimin</td>
-					<td>@item.NumTimesHinmin</td>
-					<td>@item.NumTimesDaihinmin</td>
+					<td class="text-right">@item.TotalPoint</td>
+					<td class="text-right">@item.RoundPoint</td>
+					<td class="text-right">@item.NumTimesDaifugo</td>
+					<td class="text-right">@item.NumTimesFugo</td>
+					<td class="text-right">@item.NumTimesHeimin</td>
+					<td class="text-right">@item.NumTimesHinmin</td>
+					<td class="text-right">@item.NumTimesDaihinmin</td>
 				</tr>
 				}
+				</tbody>
 			</table>
-			<a class="btn btn-success" id="btn_watch">観戦する</a>
+			@if (Model!=null && Model.NumOfRounds > 0) {
+				<a class="btn btn-success" id="btn_watch">観戦する</a>
+			}
 		</div>
-		} else {
-			<h3>空き</h3>
-			<div>現在の入室人数：@(Model==null ? 0 : Model.Master.NumOfPlayers) 人</div>
-			<input type="text" id="name" placeholder="名前" />
-			<a class="btn btn-primary" id="btn_entry">入室する</a>
 		}
     </div>
 </div>
@@ -73,7 +89,9 @@
 				alert('名前を入力してください。');
 				return;
 			}
+			$(this).fadeOut();
 			entryNewWindow('@ViewBag.Rule', '@ViewBag.RoomID', name);
+			setTimeout(function () { location.reload(); }, 5000);
 		});
 		$('#btn_watch').click(function () {
 			watchNewWindow('@ViewBag.RoomID');

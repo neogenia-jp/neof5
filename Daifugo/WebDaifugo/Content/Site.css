@@ -65,3 +65,8 @@
 .bg-color-orange {
     background-color: #E06A3B;
 }
+
+/* ---------- table ---------- */
+thead th {
+    background-color: #eef;
+}
