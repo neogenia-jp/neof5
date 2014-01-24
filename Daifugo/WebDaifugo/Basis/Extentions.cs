@@ -20,8 +20,8 @@ namespace WebDaifugo.Basis
             return 0;
         }
 
-		public static string CreatePlayerKey(this System.Web.WebSockets.AspNetWebSocketContext _this) {
-            return _this.UserAgent + "\t" + _this.UserHostAddress + "\t" + _this.RequestUri;
+		public static string CreatePlayerKey(this System.Web.WebSockets.AspNetWebSocketContext _this, string optionalString) {
+            return _this.UserAgent + "/" + _this.UserHostAddress + "/" + _this.RequestUri + "/" + optionalString;
         }
     }
 }

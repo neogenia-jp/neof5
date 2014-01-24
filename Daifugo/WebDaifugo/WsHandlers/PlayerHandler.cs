@@ -50,7 +50,7 @@ namespace WebDaifugo.WsHandlers
                 }
 
                 room = PlayRoomsManager.GetOrCreate(sessionId, rule);
-                var key = this.WebSocketContext.CreatePlayerKey();
+                var key = this.WebSocketContext.CreatePlayerKey(playerName);
 
                 pAdapter = room.FindRemotePlayer(key) as GamePlayerAdapter;
                 if (pAdapter != null && !pAdapter.IsConnected)

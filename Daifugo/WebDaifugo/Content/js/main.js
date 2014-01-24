@@ -427,7 +427,7 @@ window.onload = function () {
                     var player = new DaifugoPlayer(i, playerInfoArr[i]);
                     this.players[i] = player;
                     var d = player.deck;
-                    if (i == 0) { d.setCardScale(0.8); }
+                    if (i == this.mainPlayerNum) { d.setCardScale(0.8); }
                     else { d.setCardScale(0.5); }
                     this.addChild(player);
 
@@ -457,7 +457,7 @@ window.onload = function () {
             },
 
             clear: function() {
-                this.players.length = 0;
+                //this.players.length = 0;
             },
 
             findPlayerById: function (id) {

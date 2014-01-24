@@ -77,7 +77,7 @@ namespace WebDaifugo.WsHandlers
 
             _startTimer(PLAYROOM_LIFETIME * 1000);
 
-            var key = this.WebSocketContext.CreatePlayerKey();
+            var key = this.WebSocketContext.CreatePlayerKey(playerName);
 
             pAdapter = room.FindRemotePlayer(key) as GamePlayerAdapter;
             if (pAdapter != null && !pAdapter.IsConnected)
