@@ -20,6 +20,8 @@ namespace WebDaifugo.WsHandlers
 {
     public class PlayerHandler : WebSocketHandler
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         private static Object lockObj = new object();
         private static WebSocketCollection AllClients = new WebSocketCollection();
         private static IEnumerable<WebSocketHandler> ActiveClients { get { return AllClients.Where(c => c.WebSocketContext.IsClientConnected); } }
@@ -56,11 +58,13 @@ namespace WebDaifugo.WsHandlers
                 if (pAdapter != null && !pAdapter.IsConnected)
                 {
                     // 再接続とみなす
+                    logger.Debug("Reconnect [{0}] sessionId={1}", playerName, sessionId);  
                     pAdapter.Reconnect(playerName, (str)=>Send(str));
                 }
                 else
                 {
                     // すでにプレイ中なら切断する
+                    logger.Debug("Connect [{0}] sessionId={1}", playerName, sessionId);  
                     if (room == null || room.Master.IsPlaing) { this.Close(); return; }
 
                     pAdapter = new GamePlayerAdapter(room, playerName, (str)=>Send(str));
@@ -71,6 +75,7 @@ namespace WebDaifugo.WsHandlers
 
         public override void OnClose()
         {
+            logger.Debug("Disconnect [{0}] sessionId={1}", playerName, sessionId);  
             AllClients.Remove(this);
             if (pAdapter != null) pAdapter.Disconnect();
         }
@@ -87,7 +92,7 @@ namespace WebDaifugo.WsHandlers
         {
             JObject jsonObj = JObject.Parse(jsonMsg);
 
-            Debug.WriteLine("OnMessage()" + jsonObj);
+            logger.Trace("OnMessage [{0}] sessionId={1} {2}", playerName, sessionId, jsonObj);  
 
             try
             {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WebDaifugo.Basis;
 using WebDaifugo.Models;
+using Daifugo.Utils;
 
 namespace WebDaifugo.AppClasses
 {
@@ -14,6 +15,9 @@ namespace WebDaifugo.AppClasses
 	/// </summary>
     public class DaifugoPlayRoom : IGameEventListener, IPlayRoomModel 
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+
 		// 未使用となるタイムアウト時間（分）
         private const int UNUSED_TIMEOUT_MINUTES = 60;
 
@@ -58,6 +62,8 @@ namespace WebDaifugo.AppClasses
         {
             _updateLastUsed();
             NumOfRounds++;
+
+            logger.Info("[{0}] Game start. Round={1} Players={2}", RoomID, NumOfRounds, _players.Keys.JoinString());
         }
 
 		/// <summary>
@@ -73,6 +79,8 @@ namespace WebDaifugo.AppClasses
             {
                 _standings.Values.ElementAt(i++).AddGameResult(pi.Ranking);
             }
+
+            logger.Info("[{0}] Game finished. Round={1} History={2}", RoomID, NumOfRounds, _ctx.History.Select(h=>h.ToString()).JoinString());
         }
 
 		/// <summary>
@@ -89,8 +97,9 @@ namespace WebDaifugo.AppClasses
                 Master.AddPlayer(p);
                 _standings.Add(p, new StandingsModel(p.Name));
             }
-            catch (Exception )
+            catch (Exception ex)
             {
+                logger.ErrorException("Error in Addplayer().", ex);
             }
         }
 
@@ -101,6 +110,7 @@ namespace WebDaifugo.AppClasses
         public void AddObserver(IGameEventListener m)
         {
             Master.AddObserver(m);
+            logger.Info("[{0}] Visit observer. {1}", RoomID, m);
         }
         
 		/// <summary>
@@ -110,6 +120,7 @@ namespace WebDaifugo.AppClasses
         public void RemoveObserver(IGameEventListener m)
         {
             Master.RemoveObsrver(m);
+            logger.Info("[{0}] Leave observer. {1}", RoomID, m);
         }
 
 		/// <summary>
@@ -130,6 +141,7 @@ namespace WebDaifugo.AppClasses
 		/// <param name="message"></param>
         public void Tweet(string message)
         {
+            logger.Info("[{0}] Tweet. {1}", RoomID, message);
             foreach (ITweetListener pl in _players.Values.Where((p) => p is ITweetListener))
             {
                 pl.Tweet(message);
@@ -154,6 +166,7 @@ namespace WebDaifugo.AppClasses
 
         public void Dispose()
         {
+            logger.Info("[{0}] Dispose() called.", RoomID);
             Master.start -= OnGameStart;
             Master.finish -= OnGameFinish;
             Master.Dispose();
