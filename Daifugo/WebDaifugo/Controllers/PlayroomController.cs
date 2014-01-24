@@ -19,12 +19,12 @@ namespace WebDaifugo.Controllers
             internal static ViewModel Create()
             {
                 var vm = new ViewModel();
-                for (int i = 1; i <= 8; i++)
+                for (int i = 1; i <= 10; i++)
                 {
                     string id = string.Format("A-{0:00}", i);
                     vm.RoomsA[id] = PlayRoomsManager.Get(id);
                 }
-                for (int i = 1; i <= 8; i++)
+                for (int i = 1; i <= 5; i++)
                 {
                     string id = string.Format("B-{0:00}", i);
                     vm.RoomsB[id] = PlayRoomsManager.Get(id);
