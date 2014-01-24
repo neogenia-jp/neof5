@@ -433,7 +433,7 @@ window.onload = function () {
 
                 {
                     var tmp = this.tweet = new Label();
-                    tmp.font = '16pt sans-serif';
+                    tmp.font = '12pt sans-serif';
                     tmp.x = 8; tmp.y = 6;
                     this.addChild(tmp);
                 }
