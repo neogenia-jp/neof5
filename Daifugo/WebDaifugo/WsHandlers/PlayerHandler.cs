@@ -65,7 +65,7 @@ namespace WebDaifugo.WsHandlers
                 {
                     // すでにプレイ中なら切断する
                     logger.Debug("Connect [{0}] sessionId={1}", playerName, sessionId);  
-                    if (room == null || room.Master.IsPlaing) { this.Close(); return; }
+                    if (room == null || room.NumOfRounds > 0) { this.Close(); return; }
 
                     pAdapter = new GamePlayerAdapter(room, playerName, (str)=>Send(str));
                     room.AddPlayer(key, pAdapter);
