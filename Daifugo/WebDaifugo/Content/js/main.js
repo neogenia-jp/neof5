@@ -28,11 +28,17 @@ window.onload = function () {
     var INFOBOX_W = 64;
     var INFOBOX_H = 64;
 
+    var TWEETBOX_W = 380;
+    var TWEETBOX_H = 35;
+
     // プレイヤー情報ボックス
     var INFOBOX_BACKGROUND_COLOR     = "#cae7f2";  // 塗りつぶしの色 
     var INFOBOX_BORDER_COLOR         = "#5b686d";  // 枠線の色
     var INFOBOX_BACKGROUND_HICOLOR   = "#fbe481";  // 塗りつぶしの色（ハイライト）
     var INFOBOX_BORDER_HICOLOR       = "#e06a3b";  // 枠線の色（ハイライト）
+
+	// ツイート
+    var TWEET_BACKGROUND_COLOR       = "#f7f7f7";  // 背景色
 
     // 山
     var YAMA_BORDER_COLOR            = "#5b686d";  // 塗りつぶしの色
@@ -142,8 +148,8 @@ window.onload = function () {
                 Group.call(this);
                 this.cardStr = cardStr;
                 this.cardArr = Array();
-                this.cardSpls = new Group();  // カードスプライトを入れるためのグループ
-                this.addChild(this.cardSpls);
+                this.cardSprs = new Group();  // カードスプライトを入れるためのグループ
+                this.addChild(this.cardSprs);
                 this.isBackside = true;
                 this.height = DECK_H;
                 this.width = DECK_W;
@@ -192,23 +198,23 @@ window.onload = function () {
                 // スプライトをセット
                 for (var i = 0; i < this.cardArr.length; i++) {
                     var c = this.isBackside ? '--' : this.cardArr[i];
-                    if (!this.cardSpls.childNodes[i]) {
+                    if (!this.cardSprs.childNodes[i]) {
                         var c = new Card(c, this.cardScale);
                         //c.scaleX = this.cardScale;
                         //c.scaleY = this.cardScale;
                         var _this = this;
-                        this.cardSpls.addChild(c);
+                        this.cardSprs.addChild(c);
                         c.addEventListener(Event.TOUCH_END, function () { _this.onTouchEnd(this); });
                     } else {
-                        this.cardSpls.childNodes[i].setCardStr(c);
+                        this.cardSprs.childNodes[i].setCardStr(c);
                     }
-                    var s = this.cardSpls.childNodes[i];
+                    var s = this.cardSprs.childNodes[i];
                     s.tl.moveTo(card_w * i, 0, 3, enchant.Easing.CIRC_EASEIN);
                     w = card_w * i + s.width;
                 }
                 // 不要なスプライトを削除する
-                while (this.cardArr.length < this.cardSpls.childNodes.length) {
-                    this.cardSpls.removeChild(this.cardSpls.lastChild);
+                while (this.cardArr.length < this.cardSprs.childNodes.length) {
+                    this.cardSprs.removeChild(this.cardSprs.lastChild);
                 }
                 //this.width = w;
             },
@@ -233,8 +239,8 @@ window.onload = function () {
             // 選択されているカードを取得
             getSelectedCards: function () {
                 var ret = Array();
-                for (var i = 0; i < this.cardSpls.childNodes.length; i++) {
-                    if (this.cardSpls.childNodes[i].y != 0) ret.push(this.cardArr[i]);
+                for (var i = 0; i < this.cardSprs.childNodes.length; i++) {
+                    if (this.cardSprs.childNodes[i].y != 0) ret.push(this.cardArr[i]);
                 }
                 return ret;
             },
@@ -242,9 +248,9 @@ window.onload = function () {
         	// 拡大縮小
             setCardScale: function (b) {
             	if (b!=undefined) this.cardScale = b;
-                for (var i = 0; i < this.cardSpls.childNodes.length; i++) {
-                	this.cardSpls.childNodes[i].scaleX = this.cardScale;
-                	this.cardSpls.childNodes[i].scaleY = this.cardScale;
+                for (var i = 0; i < this.cardSprs.childNodes.length; i++) {
+                	this.cardSprs.childNodes[i].scaleX = this.cardScale;
+                	this.cardSprs.childNodes[i].scaleY = this.cardScale;
                 }
             }
         });
@@ -371,26 +377,26 @@ window.onload = function () {
 
                 {
                     var tmp = this.name = new Label();
-                    tmp.font = '18 sans-serif';
+                    tmp.font = '10pt sans-serif';
                     tmp.x = 5; tmp.y = 5;
                     this.addChild(tmp);
                 }
                 {
                     var tmp = this.cardCount = new Label();
-                    tmp.font = '16 sans-serif';
+                    tmp.font = '9pt sans-serif';
                     tmp.x = 5; tmp.y = 25;
                     this.addChild(tmp);
                 }
                 {
                     var tmp = this.rank = new Label();  
-                    tmp.font = '15 sans-serif';
+                    tmp.font = '9pt sans-serif';
                     tmp.x = 5; tmp.y = 45;
                     this.addChild(tmp);
                 }
                 {
                     var tmp = this.order = new Label();
-                    tmp.font = '16 sans-serif';
-                    tmp.x = 34; tmp.y = 45;
+                    tmp.font = '10pt sans-serif';
+                    tmp.x = 38; tmp.y = 45;
                     this.addChild(tmp);
                 }
             },
@@ -408,6 +414,44 @@ window.onload = function () {
         });
 
         /**
+         * Tweet表示クラス
+         */
+        TweetBox = Class.create(Group, {
+            initialize: function (width, height) {
+                Group.call(this);
+                this.width = width;
+                this.height = height;
+
+                this._boxSprite = new Sprite(this.width, this.height);
+                this._surface = new Surface(this.width, this.height);
+                this._boxSprite.image = this._surface;
+                this._boxSprite.backgroundColor = TWEET_BACKGROUND_COLOR;
+                drawBoxLine(this._surface, INFOBOX_BORDER_COLOR);
+
+                this.addChild(this._boxSprite);
+                this._boxSprite.visible = false;
+
+                {
+                    var tmp = this.tweet = new Label();
+                    tmp.font = '16pt sans-serif';
+                    tmp.x = 8; tmp.y = 6;
+                    this.addChild(tmp);
+                }
+            },
+
+            showMessage: function (message) {
+                this.tweet.text = message;
+                this._boxSprite.visible = true;
+                var _this = this;
+                setTimeout(function () {
+                	_this.tweet.text = "";
+					_this._boxSprite.visible = false;
+                }, 5000);
+            }
+
+        });
+
+        /**
          * プレイヤー管理クラス
          */
         PlayerManager = Class.create(Group, {
@@ -417,6 +461,7 @@ window.onload = function () {
                 this.height = height;
                 this.players = Array();
                 this.playerInfoBoxes = Array();
+                this.tweetBoxes = Array();
                 this.mainPlayerNum = 0;
             },
 
@@ -433,6 +478,10 @@ window.onload = function () {
 
                     var box = new PlayerInfoBox(INFOBOX_W, INFOBOX_H);
                     this.playerInfoBoxes[i] = box;
+                    this.addChild(box);
+
+                    box = new TweetBox(TWEETBOX_W, TWEETBOX_H);
+                    this.tweetBoxes[i] = box;
                     this.addChild(box);
                 }
             },
@@ -508,6 +557,27 @@ window.onload = function () {
                     	d.visible = false;
                     }
                 }
+
+				// ツイートの表示位置（中央のXY座標）
+                xyr = [
+                    DECK_H + TWEETBOX_W/2, GAME_H - INFOBOX_H - 80 + TWEETBOX_H/2, 0,
+                    INFOBOX_W + TWEETBOX_H/2, DECK_H + 18 + TWEETBOX_W/2, 90,
+                    0 + TWEETBOX_W/2, INFOBOX_H + TWEETBOX_H/2, 0,
+                    GAME_W / 2 + TWEETBOX_W/2, INFOBOX_H + TWEETBOX_H/2, 0,
+                    GAME_W - INFOBOX_W - TWEETBOX_H/2, GAME_H - DECK_H - 18 - TWEETBOX_W/2, -90
+                ];
+                for (var i = 0; i < this.players.length; i++) {
+                	var d = this.tweetBoxes[(i + this.mainPlayerNum) % (this.players.length)];
+                	d.x = xyr[i * 3] - d.width/2;
+                	d.y = xyr[i * 3 + 1] - d.height/2;
+                	d.rotation = xyr[i * 3 + 2];
+                }
+            },
+
+        	// ツイートの表示
+            showTweet: function (playerNum, message) {
+                var d = this.tweetBoxes[playerNum];
+                d.showMessage(this.playerInfoBoxes[playerNum].name.text + "：「" + message + "」");
             }
         });
 
@@ -590,6 +660,7 @@ window.onload = function () {
             gameInfo.x = GAME_W - 100;
             gameInfo.y = GAME_H - 20;
             gameInfo.textAlign = 'right';
+            gameInfo.font = '9pt sans-serif';
 
             // プレイヤー管理クラス
             var pm = new PlayerManager(GAME_W, GAME_H);
@@ -689,6 +760,8 @@ window.onload = function () {
                 if (obj.Kind == "Exception") {
                     gameInfo.text = 'エラー';
                     alert(obj.Message);
+                } else if (obj.Kind == "Tweet") {
+                	pm.showTweet(obj.PlayerNum, obj.Message);
                 } else if (obj.Kind == "Start") {
                 	//startButton.tl.fadeOut(3).and().moveBy(0, 40, 4);
                 	gameInfo.text = 'ゲーム開始';

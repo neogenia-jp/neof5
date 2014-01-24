@@ -7,6 +7,6 @@ namespace WebDaifugo.Basis
 {
     public interface ITweetListener
     {
-        void Tweet(string message);
+        void Tweet(int tweetedPlayerNum, string message);
     }
 }

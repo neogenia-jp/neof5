@@ -105,11 +105,12 @@ namespace WebDaifugo.WsHandlers
             Send(new Neof5Protocols.ProtocolData(playerNum, "Thinking", ctx));
         }
 
-        public void Tweet(string message)
+        public void Tweet(int twetedPlayerNum, string message)
         {
             JObject json = new JObject();
             json["Kind"] = "Tweet";
             json["Message"] = message;
+            json["PlayerNum"] = twetedPlayerNum;
             Send(json.ToString());
         }
 

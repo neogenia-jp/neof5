@@ -139,16 +139,16 @@ namespace WebDaifugo.AppClasses
 		/// Tweet発生時のイベントハンドラ
 		/// </summary>
 		/// <param name="message"></param>
-        public void Tweet(string message)
+        public void Tweet(int tweetedPlayerNum, string message)
         {
             logger.Info("[{0}] Tweet. {1}", RoomID, message);
             foreach (ITweetListener pl in _players.Values.Where((p) => p is ITweetListener))
             {
-                pl.Tweet(message);
+                pl.Tweet(tweetedPlayerNum, message);
             }
-            foreach (ITweetListener mn in Master.Observers)
+            foreach (ITweetListener mn in Master.Observers.Where((o)=>o is ITweetListener))
             {
-                mn.Tweet(message);
+                mn.Tweet(tweetedPlayerNum, message);
             }
         }
 

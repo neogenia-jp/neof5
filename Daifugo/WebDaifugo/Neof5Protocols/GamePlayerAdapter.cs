@@ -78,9 +78,16 @@ namespace WebDaifugo.Neof5Protocols
 
             if (kind == "Tweet")
             {
-                jsonObj["PlayerNum"] = playerNum;
-                //AllClients.Broadcast(jsonObj.ToString());
-                // todo
+                string message;
+                try
+                {
+                    message = jsonObj["Message"].ToString();
+                }
+                catch (Exception)
+                {
+					throw new InvalidOperationException("Messageがありません");
+                }
+                room.Tweet(playerNum, message);
             }
             else if (kind == "Start")
             {
@@ -154,11 +161,13 @@ namespace WebDaifugo.Neof5Protocols
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
         {
             room.Master.PutCards(this, null);
+            room.Tweet(playerNum, "タイムアウトしました。");
         }
 
         public void CardsArePut(IPlayerContext ctx)
         {
             Send(new Neof5Protocols.ProtocolData(playerNum, "CardsArePut", ctx));
+            //room.Tweet(ctx.GameContext.Teban, "かーどぷっと");  // for tweet debug
         }
 
         public void Nagare(IPlayerContext ctx)
@@ -195,13 +204,14 @@ namespace WebDaifugo.Neof5Protocols
         public void bindEvents(GameEvents evt) { ((IGamePlayer)this).BindEvents(evt); }
         public void unbindEvents(GameEvents evt) { ((IGamePlayer)this).UnbindEvents(evt); }
 
-        public void Tweet(string message)
+        public void Tweet(int tweetedPlayerNum, string message)
         {
             if (_sendFunc != null)
             {
                 JObject json = new JObject();
                 json["Kind"] = "Tweet";
                 json["Message"] = message;
+                json["PlayerNum"] = tweetedPlayerNum;
                 _sendFunc(json.ToString());
             }
         }
