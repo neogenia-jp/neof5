@@ -161,7 +161,7 @@ namespace WebDaifugo.Neof5Protocols
         public void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
         {
             room.Master.PutCards(this, null);
-            room.Tweet(playerNum, "タイムアウトしました。");
+            room.Tweet(playerNum, "（サーバ処理：タイムアウト）");
         }
 
         public void CardsArePut(IPlayerContext ctx)
