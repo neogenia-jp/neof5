@@ -9,8 +9,14 @@ using WebDaifugo.Models;
 
 namespace WebDaifugo.AppClasses
 {
+	/// <summary>
+	/// プレイルームの実装クラス
+	/// </summary>
     public class DaifugoPlayRoom : IGameEventListener, IPlayRoomModel 
     {
+		// 未使用となるタイムアウト時間（分）
+        private const int UNUSED_TIMEOUT_MINUTES = 60;
+
 		// ゲームマスタ
         public GameMaster Master { get; private set; }
 		// ルームID
@@ -25,10 +31,11 @@ namespace WebDaifugo.AppClasses
 		// プレイヤーの成績表のコレクション
         private readonly Dictionary<IGamePlayer, StandingsModel> _standings = new Dictionary<IGamePlayer, StandingsModel>();
 
-		/// <summary>
-		/// 現在のラウンド数
-		/// </summary>
+		// 現在のラウンド数
         public int NumOfRounds { get; private set; }
+
+        private DateTime _lastUsed;
+        private void _updateLastUsed() { _lastUsed = DateTime.Now; }
 
 		/// <summary>
 		/// コンストラクタ
@@ -40,6 +47,7 @@ namespace WebDaifugo.AppClasses
             var ctx = ContextFactory.CreateGameContext(rule=="A"?0:1);
 	        Master = ContextFactory.CreateGameMaster(ctx);
             Master.AddObserver(this);
+            _updateLastUsed();
         }
 
 		/// <summary>
@@ -48,6 +56,7 @@ namespace WebDaifugo.AppClasses
 		/// <param name="ctx"></param>
         private void OnGameStart(GameEvents.getcontext ctx)
         {
+            _updateLastUsed();
             NumOfRounds++;
         }
 
@@ -57,6 +66,7 @@ namespace WebDaifugo.AppClasses
 		/// <param name="ctx"></param>
         private void OnGameFinish(GameEvents.getcontext ctx)
         {
+            _updateLastUsed();
             var _ctx = ctx(this).GameContext;
 			int i=0;
             foreach (var pi in _ctx.PlayerInfo)
@@ -72,13 +82,14 @@ namespace WebDaifugo.AppClasses
 		/// <param name="p"></param>
         public void AddPlayer(string key, IGamePlayer p)
         {
+            _updateLastUsed();
             try
             {
                 _players.Add(key, p);
                 Master.AddPlayer(p);
                 _standings.Add(p, new StandingsModel(p.Name));
             }
-            catch (Exception ex)
+            catch (Exception )
             {
             }
         }
@@ -161,6 +172,16 @@ namespace WebDaifugo.AppClasses
                 var name = "COM" + i;
                 AddPlayer(name, PoorPlayer.Create(name, Master));
             }
+        }
+
+		/// <summary>
+		/// 使用していないかどうかを判定する
+		/// </summary>
+		/// <returns></returns>
+        public bool IsUnused()
+        {
+			// ある一定時間以上使用していなければ未使用と判断する。
+            return _lastUsed <= DateTime.Now.AddMinutes(-UNUSED_TIMEOUT_MINUTES);
         }
     }
 }

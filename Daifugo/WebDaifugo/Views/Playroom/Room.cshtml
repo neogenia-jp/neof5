@@ -20,45 +20,56 @@
 		} 
 
 		@if (Model !=null) {
-		<h3>ラウンド数</h3>
-		<div>
-			@Model.NumOfRounds 回目
-        </div>              
-
-		<h3>成績表</h3>
-		<div class="table-responsive">
-			<table class="table table-bordered">
-				<thead>
-				<tr>
-					<th>プレイヤー名</th>
-					<th>総合得点</th>
-					<th>直前ラウンドの得点</th>
-					<th>大富豪</th>
-					<th>富豪</th>
-					<th>平民</th>
-					<th>貧民</th>
-					<th>大貧民</th>
-				</tr>
-				</thead>
-				<tbody>
-				@foreach (var item in Model.Standings) {
-				<tr>
-					<td>@item.PlayerName</td>
-					<td class="text-right">@item.TotalPoint</td>
-					<td class="text-right">@item.RoundPoint</td>
-					<td class="text-right">@item.NumTimesDaifugo</td>
-					<td class="text-right">@item.NumTimesFugo</td>
-					<td class="text-right">@item.NumTimesHeimin</td>
-					<td class="text-right">@item.NumTimesHinmin</td>
-					<td class="text-right">@item.NumTimesDaihinmin</td>
-				</tr>
+			if (Model.NumOfRounds == 0)
+			{
+				<h3>参加者受付中</h3>
+			} else {
+				if (Model.Master.IsPlaing) { 
+					<div class="alert alert-info">
+						第 @Model.NumOfRounds ラウンド
+						<span class="label label-primary"><span class="glyphicon glyphicon-play"></span> プレイ中</span>
+					</div>
+				} else {
+					<div class="alert alert-warning">
+						第 @Model.NumOfRounds ラウンド
+						<span class="label label-default"><span class="glyphicon glyphicon-pause"></span> 終了</span>
+					</div>
 				}
-				</tbody>
-			</table>
-			@if (Model!=null && Model.NumOfRounds > 0) {
-				<a class="btn btn-success" id="btn_watch">観戦する</a>
 			}
-		</div>
+			<h3>成績表</h3>
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<thead>
+					<tr>
+						<th>プレイヤー名</th>
+						<th>総合得点</th>
+						<th>直前ラウンドの得点</th>
+						<th>大富豪</th>
+						<th>富豪</th>
+						<th>平民</th>
+						<th>貧民</th>
+						<th>大貧民</th>
+					</tr>
+					</thead>
+					<tbody>
+					@foreach (var item in Model.Standings) {
+					<tr>
+						<td>@item.PlayerName</td>
+						<td class="text-right">@item.TotalPoint</td>
+						<td class="text-right">@item.RoundPoint</td>
+						<td class="text-right">@item.NumTimesDaifugo</td>
+						<td class="text-right">@item.NumTimesFugo</td>
+						<td class="text-right">@item.NumTimesHeimin</td>
+						<td class="text-right">@item.NumTimesHinmin</td>
+						<td class="text-right">@item.NumTimesDaihinmin</td>
+					</tr>
+					}
+					</tbody>
+				</table>
+				@if (Model!=null && Model.NumOfRounds > 0) {
+					<a class="btn btn-success" id="btn_watch"><span class="glyphicon glyphicon-eye-open"></span> 観戦する</a>
+				}
+			</div>
 		}
     </div>
 </div>

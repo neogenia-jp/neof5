@@ -160,6 +160,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap\bootstrap.min.css" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\imgs\apad.png" />
     <Content Include="Content\imgs\bar.png" />
     <Content Include="Content\imgs\button.png" />
@@ -214,6 +215,9 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\bootstrap\bootstrap.min.js" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
     <None Include="Properties\PublishProfiles\neof5master - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\neof5master - Web Deploy.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
