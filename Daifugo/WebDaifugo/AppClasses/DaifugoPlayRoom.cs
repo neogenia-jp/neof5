@@ -45,7 +45,7 @@ namespace WebDaifugo.AppClasses
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="roomID"></param>
-        internal DaifugoPlayRoom(string roomID, string rule) { 
+        public DaifugoPlayRoom(string roomID, string rule) { 
             RoomID = roomID;
             Rule = rule;
             var ctx = ContextFactory.CreateGameContext(rule=="A"?0:1);
@@ -96,7 +96,7 @@ namespace WebDaifugo.AppClasses
                 _players.Add(key, p);
                 Master.AddPlayer(p);
                 _standings.Add(p, new StandingsModel(p.Name));
-                if (_players.Count >= 5) { Master.Start(); }  // 5人そろったら自動的にゲーム開始
+                //if (_players.Count >= 5) { Master.Start(); }  // 5人そろったら自動的にゲーム開始
             }
             catch (Exception ex)
             {

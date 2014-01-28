@@ -9,6 +9,7 @@ using Daifugo.GameImples;
 using Moq;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace DaifugoTest
 {
@@ -81,55 +82,45 @@ namespace DaifugoTest
         }
 
         [TestMethod]
-        public void GameMaster_swapCards()
+        public void CardDistributer_swapCards()
         {
-            var ctx = ContextFactory.CreateGameContext();
-
-            var pc1 = (PlayerContext)ContextFactory.CreatePlayerContext(p1, ctx);
-            var pc2 = (PlayerContext)ContextFactory.CreatePlayerContext(p2, ctx);
-
             // 手札をセット
-            pc1._deck.AddRange(DeckGenerator.FromCardsetString("H1 D3 DK"));
-            pc2._deck.AddRange(DeckGenerator.FromCardsetString("C0 SQ H4"));
+			var list1 = DeckGenerator.FromCardsetString("H1 D3 DK");
+			var list2 = DeckGenerator.FromCardsetString("C0 SQ H4");
             
             // D3 ⇔ SQ
-            GameMaster._swapCard(pc1, pc2);
+            DefaultCardDistributer._swap(list1, list2, 1);
 
             // 枚数チェック
-            Assert.AreEqual(3, pc1.Deck.Count());
-            Assert.AreEqual(3, pc2.Deck.Count());
+            Assert.AreEqual(3, list2.Count());
+            Assert.AreEqual(3, list2.Count());
 
             // スワップされたカードの所在確認
-            Assert.IsFalse(pc1.Deck.Contains(new Card(Suit.DIA, 3)));
-            Assert.IsTrue(pc1.Deck.Contains(new Card(Suit.SPD, 12)));
-            Assert.IsFalse(pc2.Deck.Contains(new Card(Suit.SPD, 12)));
-            Assert.IsTrue(pc2.Deck.Contains(new Card(Suit.DIA, 3)));
+            Assert.IsFalse(list1.Contains(new Card(Suit.DIA, 3)));
+            Assert.IsTrue(list1.Contains(new Card(Suit.SPD, 12)));
+            Assert.IsFalse(list2.Contains(new Card(Suit.SPD, 12)));
+            Assert.IsTrue(list2.Contains(new Card(Suit.DIA, 3)));
         }
 
         [TestMethod]
-        public void GameMaster_swapCards_Joker()
+        public void CardDistributer_swapCards_Joker()
         {
-            var ctx = ContextFactory.CreateGameContext();
-
-            var pc1 = (PlayerContext)ContextFactory.CreatePlayerContext(p1, ctx);
-            var pc2 = (PlayerContext)ContextFactory.CreatePlayerContext(p2, ctx);
-
             // 手札をセット
-            pc1._deck.AddRange(DeckGenerator.FromCardsetString("H2 S4 D4 DK C4 H5 S6 S7 H7"));
-            pc2._deck.AddRange(DeckGenerator.FromCardsetString("C0 H9 S6 S2 SQ SJ JK S1 H3"));
+            var pc1 = DeckGenerator.FromCardsetString("H2 S4 D4 DK C4 H5 S6 S7 H7");
+            var pc2 = DeckGenerator.FromCardsetString("C0 H9 S6 S2 SQ SJ JK S1 H3");
 
             // D4 ⇔ JK
-            GameMaster._swapCard(pc1, pc2);
+            DefaultCardDistributer._swap(pc1, pc2, 1);
 
             // 枚数チェック
-            Assert.AreEqual(9, pc1.Deck.Count());
-            Assert.AreEqual(9, pc2.Deck.Count());
+            Assert.AreEqual(9, pc1.Count());
+            Assert.AreEqual(9, pc2.Count());
 
             // スワップされたカードの所在確認
-            Assert.IsFalse(pc1.Deck.Contains(new Card(Suit.CLB, 4)));
-            Assert.IsTrue(pc1.Deck.Contains(new Card(Suit.JKR, 0)));
-            Assert.IsFalse(pc2.Deck.Contains(new Card(Suit.JKR, 0)));
-            Assert.IsTrue(pc2.Deck.Contains(new Card(Suit.CLB, 4)));
+            Assert.IsFalse(pc1.Contains(new Card(Suit.CLB, 4)));
+            Assert.IsTrue(pc1.Contains(new Card(Suit.JKR, 0)));
+            Assert.IsFalse(pc2.Contains(new Card(Suit.JKR, 0)));
+            Assert.IsTrue(pc2.Contains(new Card(Suit.CLB, 4)));
         }
 
         [TestMethod]

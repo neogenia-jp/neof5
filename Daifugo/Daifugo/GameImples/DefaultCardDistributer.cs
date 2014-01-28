@@ -37,7 +37,7 @@ namespace Daifugo.GameImples
             return rand.Next(players.Count());
         }
 
-        public IList<Card>[] Distribute(IEnumerable<PlayerInfoType> players, IEnumerable<Card> cardset)
+        public virtual IList<Card>[] Distribute(IEnumerable<PlayerInfoType> players, IEnumerable<Card> cardset)
         {
             var n = players.Count();
             var ret = new List<Card>[n];
@@ -83,5 +83,52 @@ namespace Daifugo.GameImples
             }
             return ret;
         }
+
+        public virtual bool SwapCards(IDictionary<PlayerInfoType, IList<Card>> playerCards)
+        {
+            bool ret = false;
+
+            // 大富豪⇔大貧民 2枚
+            ret |= _swapCards(playerCards, PlayerRank.DAIFUGO, PlayerRank.DAIHINMIN, 2);
+
+            // 富豪⇔貧民 1枚
+            ret |= _swapCards(playerCards, PlayerRank.FUGO, PlayerRank.HINMIN, 1);
+
+            return ret;
+        }
+        
+        internal static bool _swapCards(IDictionary<PlayerInfoType, IList<Card>> playerCards, PlayerRank hight, PlayerRank low, int num)
+		{
+            bool ret = false;
+            var fugo = playerCards.Where((pc) => pc.Key.Ranking == hight).ToArray();
+            var hinmin = playerCards.Where((pc) => pc.Key.Ranking == low).ToArray();
+            for (int i = 0; i < fugo.Length; i++)
+            {
+                var pc_from = fugo.ElementAt(i).Value;
+                var pc_to = hinmin.ElementAt(i).Value;
+                _swap(pc_from, pc_to, num);
+                ret = true;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 手札の中から最強と最弱のカードを交換する
+        /// </summary>
+        /// <param name="pc_h"></param>
+        /// <param name="pc_l"></param>
+        internal static void _swap(IList<Card> pc_h, IList<Card> pc_l, int num)
+        {
+            while (num-- > 0)
+            {
+                var card_w = pc_h.Min();  // 最弱カード
+                var card_s = pc_l.Max();  // 最強カード
+                pc_h.Remove(card_w);
+                pc_l.Remove(card_s);
+                pc_h.Add(card_s);
+                pc_l.Add(card_w);
+            }
+        }
+
     }
 }

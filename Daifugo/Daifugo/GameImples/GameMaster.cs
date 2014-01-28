@@ -137,18 +137,24 @@ namespace Daifugo.GameImples
             CardDistributed(_getContext);
             //context._players.ForEach(px => px.CardDistributed(playerContexts[px]));
 
-            // 手番を決める。
-            context.Teban = getFirstDealer();
-
-            // カード交換
             {
-                // 大富豪⇔大貧民 2枚
+				var tmp = new Dictionary<IPlayerInfo, IList<Card>>();
+                for (int i = 0; i < context._players.Count; i++ )
+                {
+					var p = context._players[i];
+                    var pi = context.PlayerInfo.ElementAt(i);
+                    tmp.Add(pi, playerContexts[p]._deck);
+                }
+			
+                // 手番を決める。
+				context.Teban = context.Rule.GetFirstDealer(tmp);
+				
+                // カード交換
                 _wait();
-                cardSwapProcess(PlayerRank.DAIFUGO, PlayerRank.DAIHINMIN, 2);
-
-                // 富豪⇔貧民 1枚
-                _wait();
-                cardSwapProcess(PlayerRank.FUGO, PlayerRank.HINMIN, 1);
+                if (CardDistributer.SwapCards(tmp))
+                {
+                    CardSwapped(_getContext);
+                }
             }
 
             // 手札ソート
@@ -172,6 +178,14 @@ namespace Daifugo.GameImples
             });
         }
 
+        public bool SetRule(IRule rule)
+        {
+            if (IsPlaing) return false;
+            context.SetRule(rule);
+            return true;
+        }
+
+	/*
         /// <summary>
         /// 最初の親を決める
         /// </summary>
@@ -194,7 +208,6 @@ namespace Daifugo.GameImples
             }
             return sp3;
         }
-
 
         /// <summary>
         /// プレイヤータイトル間でカードを交換する
@@ -233,7 +246,7 @@ namespace Daifugo.GameImples
             pc_h._deck.Add(card_s);
             pc_l._deck.Add(card_w);
         }
-
+	*/
         public ICheckResult PutCards(IGamePlayer player, IEnumerable<Card> cards)
         {
             lock (context)
@@ -336,6 +349,7 @@ namespace Daifugo.GameImples
                     // 手札がなくなった？
                     if (pcontext._deck.Count == 0)
                     {
+                        context._history.Add(new HE_Agari(context.Teban));
                         // あがりカード判定
                         var ret = context.Rule.CanAgari(context, cards);
                         if (ret is CheckOK)

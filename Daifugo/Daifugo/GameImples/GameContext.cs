@@ -33,13 +33,6 @@ namespace Daifugo.GameImples
             tricIdx++;
             return _history.GetRange(tricIdx, _history.Count - tricIdx).Where(h=>h is HE_PutCards).Select(h=>((h as HE_PutCards).Cards));
         } }
-        //public override IEnumerable<IEnumerable<Card>> Ba
-        //{
-        //    get
-        //    {
-        //        return _ba;
-        //    }
-        //}
 
         // カードヒストリ
         public readonly List<GameHistoryEntity> _history = new List<GameHistoryEntity>();
@@ -62,11 +55,13 @@ namespace Daifugo.GameImples
                 }
             }
         } 
+
         // 革命中かどうか
         public override bool IsKakumei { get; set; }
 
         // ルール
         public override IRule Rule { get; protected set; }
+        internal void SetRule(IRule rule) { Rule = rule; }
 
         /// <summary>
         /// コンストラクタ（非公開）

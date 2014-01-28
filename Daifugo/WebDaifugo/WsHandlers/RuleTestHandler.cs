@@ -21,7 +21,7 @@ namespace WebDaifugo.WsHandlers
 	/// <summary>
 	/// テストのためのカード配置を行うクラス
 	/// </summary>
-    internal class TestCardDistributer : ICardDistributer
+    internal class TestCardDistributer : DefaultCardDistributer
     {
         IList<Card>[] ret;
 
@@ -33,7 +33,7 @@ namespace WebDaifugo.WsHandlers
 				DeckGenerator.FromCardsetString(p2),
 			};
         }
-        public IList<Card>[] Distribute(IEnumerable<PlayerInfoType> players, IEnumerable<Card> cardset)
+        public override IList<Card>[] Distribute(IEnumerable<PlayerInfoType> players, IEnumerable<Card> cardset)
         {
             return ret;
         }

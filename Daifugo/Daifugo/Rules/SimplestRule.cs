@@ -94,5 +94,29 @@ namespace Daifugo.Rules
             return true;
         }
         public virtual ICheckResult CanAgari(IGameContext context, IEnumerable<Card> cards) { return CheckResults.Ok; }
+
+
+        /// <summary>
+        /// 最初の親を決める
+        /// </summary>
+        /// <returns></returns>
+        public virtual int GetFirstDealer(IDictionary<IPlayerInfo, IList<Card>> players)
+        {
+            int sp3 = -1;
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players.ElementAt(i).Key.Ranking == PlayerRank.DAIHINMIN)
+                {
+                    // 大貧民がいれば、そのプレーヤが親。
+                    return i;
+                }
+                if (players.ElementAt(i).Value.Contains(new Card(Suit.SPD,3)))
+                {
+                    // スペードの3を持っている人
+                    sp3 = i;
+                }
+            }
+            return sp3;
+        }
     }
 }

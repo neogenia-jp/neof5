@@ -36,5 +36,12 @@ namespace Daifugo.Bases
         /// <param name="isKakumei"></param>
         /// <returns></returns>
         ICheckResult CanAgari(IGameContext context, IEnumerable<Card> cards);
+
+		/// <summary>
+		/// 最初の親を決める
+		/// </summary>
+		/// <param name="players"></param>
+		/// <returns></returns>
+        int GetFirstDealer(IDictionary<IPlayerInfo, IList<Card>> players);
     }
 }
