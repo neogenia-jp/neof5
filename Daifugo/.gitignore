@@ -1,0 +1,15 @@
+.vs
+packages/
+*.suo
+*.user
+
+Daifugo/obj
+Daifugo/bin
+
+DaifugoTest/obj
+DaifugoTest/bin
+
+WebDaifugo/obj
+WebDaifugo/bin
+WebDaifugo/App_Data/logs
+
