@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "プログラムのテスト";
+}
+@Html.Partial("_HeaderNav")
+<div class="container">
+<div class="paper-simple">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+			<h2>@ViewBag.Title</h2>
+			<p>
+				ここでは、大会用プログラム作成支援のためのテストを実施することができます。<br />
+				テストはレベルに応じて3段階あります。<br />
+				大会に参加するためには、以下のテストをすべてパスする必要があります。<br />
+			</p>
+
+			<h3>TEST 1 - 接続チェック</h3>
+			<p>
+			最初のテストは、簡単な WebSocket の接続チェックです。<br />
+			作成したプログラムが正しくマスタサーバと接続し、通信できるかどうかをテストします。<br />
+			</p>
+			<p style="text-align:right">
+				<a href="test1" class="btn btn-success">TEST 1 詳細</a>
+			</p>
+
+			<h3>TEST 2 - ルールチェック</h3>
+			<p>
+			次のテストは、ルール通りにカードを選択することが出来るかどうかのチェックです。<br />
+			マスタサーバから送られたゲーム情況データに対し、ルールに反しないカード選択を行うことが出来るかどうかテストします。<br />
+			</p>
+			<p style="text-align:right">
+				<a href="test2" class="btn btn-success">TEST 2 詳細</a>
+			</p>
+
+			<h3>TEST 3 - 模擬対戦</h3>
+			<p>
+			最後のテストは、模擬対戦です。<br />
+			クイックプレイで使用されている対戦プログラムと実際に対戦することが出来ます。<br />
+			</p>
+			<p style="text-align:right">
+				<a href="test3" class="btn btn-success">TEST 3 詳細</a>
+			</p>
+		</div>
+	</div>
+</div>
+</div>

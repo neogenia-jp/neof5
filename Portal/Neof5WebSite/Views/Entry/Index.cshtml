@@ -1,0 +1,52 @@
+﻿@model Neof5WebSite.Models.EntryFormModel
+@{
+    ViewBag.Title = "エントリーフォーム";
+}
+@Html.Partial("_HeaderNav")
+
+<div class="container">
+<div class="paper-simple">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+			<h2>@ViewBag.Title</h2>
+
+			<div class="text-danger">@ViewBag.ErrorMessage</div>
+            <form action="postEntry" method="post" role="form" class="form-horizontal">
+              <div class="form-group">
+                    <label class="control-label col-md-5" for="inputNickname">ニックネームまたはチーム名</label>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(m => m.Nickname, new { @class = "form-control", placeholder = "ニックネームまたはチーム名" })
+						@Html.ValidationMessageFor(m => m.Nickname)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-5" for="inputEmail">連絡用メールアドレス</label>
+                    <div class="col-md-5">
+						@Html.TextBoxFor(m => m.Mailaddr, new { @class = "form-control", placeholder = "メールアドレス" })
+						@Html.ValidationMessageFor(m => m.Mailaddr)
+                    </div>
+                </div>
+				<div class="form-group">
+					<label class="control-label col-md-5" for="inputClass">参加予定のクラス</label>
+                    <div class="col-md-4">
+						@Html.DropDownListFor(m => m.EntryClass, Neof5WebSite.Models.EntryFormModel.ClassSelectItems(), new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.EntryClass)
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-5" for="inputLang">使用予定の言語/プラットフォーム</label>
+                    <div class="col-md-4">
+						@Html.DropDownListFor(m => m.UseLanguage, Neof5WebSite.Models.EntryFormModel.LanguageSelectItems(), new { @class = "form-control" })
+						@Html.ValidationMessageFor(m => m.UseLanguage)
+					</div>
+				</div>
+                <div class="form-group">
+                    <div class="col-md-offset-5 col-md-5">
+                        <button type="submit" class="btn btn-primary" disabled="disabled">受け付けは終了しています</button><br />
+                    </div>
+                </div>
+            </form>
+		</div>
+    </div>
+</div>
+</div>

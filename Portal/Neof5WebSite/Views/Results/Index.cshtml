@@ -1,0 +1,501 @@
+﻿@{
+    ViewBag.Title = "第１回大会の結果";
+}
+@Html.Partial("_HeaderNav")
+
+@section css{
+<style type="text/css">
+    .btn {
+        display: none;
+    }
+    table.standings tr th {
+        text-align: center;
+    }
+    table.standings tr td {
+        text-align: right;
+    }
+    table.standings tr td:first-child {
+        text-align: left;
+    }
+    table.questionary th {
+        width: 30%;
+        background-color: #999;
+		color: white;
+    }
+</style>
+}
+
+<div class="container">
+<div class="paper-flex-head"></div>
+<div class="paper-flex-body">
+    <div class="row paper-flex">
+        <div class="col-sm-10 col-sm-offset-1">
+            <h2>@ViewBag.Title</h2>
+			<p>2014年1月25日（土） 14:00 から第１回ネオ富豪大会が開催されました。<br />
+				メイン会場は（株）ネオジニア事務所、関係者含め参加者は全7名、うちスカイプでのリモート参加の方が1名でした。<br />
+
+			</p>
+            
+			<h3>エントリープログラム一覧<small>（プログラム名またはニックネーム）</small></h3>
+			プログラム名またはニックネーム <small class="text-warning">[プログラミング言語]</small> (敬称略）
+			<ul>
+				<li><a href="http://risaiku.net/?p=946" target="_blank">risa@徹夜</a> <small class="text-warning">[JavaScript]</small></li>
+				<li>Mitchy <small class="text-warning">[JavaScript]</small></li>
+				<li>kazufsaf <small class="text-warning">[Haskell]</small></li>
+				<li>Erami <small class="text-warning">[C#]</small></li>
+				<li><a href="https://bitbucket.org/lobin_z0x50/neof5client" target="_blank">ネオ爺2</a> <small class="text-warning">[C++11]</small></li>
+				<li>まつ and てら <small class="text-warning">[JavaScript]</small> （残念ながら当日不参加）</li>
+				<li>Vinculo <small class="text-warning">[プログラムではなく人力での参戦]</small> （今回の企画の言いだしっぺ）</li>
+			</ul>
+
+
+            <h3>優勝者</h3>
+			<p>クラスＡの優勝は、<strong class="text-danger">"risa@徹夜"</strong> でした！おめでとうございます！</p>
+			<p>クラスＢは、該当者なしとさせていただきました。</p>
+
+
+            <h3>記録</h3>
+			<p>プログラムでの参加者が５名だったため、２つの組に分かれて予選を行いました。
+				予選では一人が敗退となります。<br />
+				1つの対戦は人間とCOMを加えた5人対戦とし、10回戦まで行って累計得点数の多かった者が勝者となります。<br />
+				得点は、大富豪5点、富豪4点、平民3点、貧民2点、大貧民0点 となっています。<br />
+				なおCOMはクイックプレイ用のプログラムとなっています。<br />
+			</p>
+			<p>
+				<em>〔おことわり〕</em>
+				大会当日、上記の通り各10回戦を実施したつもりでしたが、人力用のプレイプログラムの接続処理に問題があったようで、
+				実際には1回戦目がスキップされて9回戦しか行われておりませんでした。
+				以降の記録表記および再現観戦では、スキップされた1回戦目をノーカウントとし、実質9回戦での回数表記としています。
+			</p>
+
+			<hr />
+			<h4>【クラスＡ 予選１組】</h4>
+			<p>記念すべきネオ富豪大会の最初の対戦は、人間にはかなわないもののCOM1にもなかなか勝てないという、ややレベルの低いバトルとなりました（笑<br />
+				強いカードが早い段階で出され、手札に弱いカードばかり残っていく傾向の局面が目立ちました。<br />
+				一旦大富豪になったCOM1が怒涛の勢いで連勝を重ねると、
+				5回戦での "峯＆中西" による<strong class="text-danger">無謀な革命</strong>によってさらに場が荒れ、観戦していた参加者も少しずつ盛り上がり、
+				自分の作ったプログラムの行動に一喜一憂しながら、最後まで楽しめました。<br />
+				また、"Mitchy" はゲーム開始時と終了時に必ず挨拶ツイートをしてくる、何とも<strong class="text-success">お行儀のよい</strong>プログラムでした。<br />
+			</p>
+			<strong>成績表</strong><br />
+			<table class="table table-bordered standings">
+				<tr class="active">
+					<th>対戦者(敬称略、接続順)</th><th>総合得点</th><th>大富豪</th><th>富豪</th><th>平民</th><th>貧民</th><th>大貧民</th>
+				</tr>
+				<tr>
+					<td>峯＆中西 …（峯さんとVinculoさんによる人力）</td>
+					<td>38点</td><td>4回</td><td>3回</td><td>2回</td><td>0回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>ネオ爺2</td>
+					<td>22点</td><td>0回</td><td>1回</td><td>4回</td><td>3回</td><td>1回</td>
+				</tr>
+				<tr>
+					<td>kazufsaf</td>
+					<td>8点</td><td>0回</td><td>1回</td><td>0回</td><td>2回</td><td>6回</td>
+				</tr>
+				<tr>
+					<td>Mitchy</td>
+					<td>21点</td><td>1回</td><td>1回</td><td>2回</td><td>3回</td><td>2回</td>
+				</tr>
+				<tr>
+					<td>COM1</td>
+					<td>37点</td><td>4回</td><td>3回</td><td>1回</td><td>1回</td><td>0回</td>
+				</tr>
+			</table>
+			<div class="text-right">
+				<button id="btnA01" class="btn btn-success"><span class="glyphicon glyphicon-eye-open"></span> 再現観戦</button>
+			</div>
+
+			<hr />
+
+			<h4>【クラスＡ 予選２組】</h4>
+			<p>続く予選２組では、先ほどの組とは場の雰囲気がガラリと変わって、ハイレベルな戦いとなりました。<br />
+				２回戦でマスタサーバの大サービス（バグ？）によって何と<strong class="text-danger">ジョーカーが２枚</strong>配られるというハプニングや、
+				"Erami" が決断したようにカードを切り始めるとなぜか最後に弱いカードを手札に残してあがれないというシーンが何回かあり
+				（５回戦では<strong class="text-danger">上がれるのにパス</strong>してしまう）、観戦者を沸かせました。<br />
+				前半戦は大富豪になったCOM2がそれなりの強さを見せ、後半戦も人間が苦戦するほどのハイレベルな戦いが続きました。<br />
+				結果を見てみると "risa@徹夜" の圧勝。
+				しかもそのプログラムは、ジョーカーを他のカードとペアにして出すことが出来ないそうなのですが、それでも十分な強さを見せてくれました。<br />
+			</p>
+			<strong>成績表</strong><br />
+			<table class="table table-bordered standings">
+				<tr class="active">
+					<th>対戦者(敬称略、接続順)</th><th>総合得点</th><th>大富豪</th><th>富豪</th><th>平民</th><th>貧民</th><th>大貧民</th>
+				</tr>
+				<tr>
+					<td>risa@徹夜</td>
+					<td>41点</td><td>5回</td><td>4回</td><td>0回</td><td>0回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>Erami</td>
+					<td>29点</td><td>0回</td><td>4回</td><td>3回</td><td>2回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>峯＆中西ペア …（峯さんとVinculoさんによる人力）</td>
+					<td>27点</td><td>1回</td><td>1回</td><td>4回</td><td>3回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>COM1</td>
+					<td>8点</td><td>0回</td><td>0回</td><td>0回</td><td>4回</td><td>5回</td>
+				</tr>
+				<tr>
+					<td>COM2</td>
+					<td>21点</td><td>3回</td><td>0回</td><td>2回</td><td>0回</td><td>4回</td>
+				</tr>
+			</table>
+			<div class="text-right">
+				<button id="btnA03" class="btn btn-success"><span class="glyphicon glyphicon-eye-open"></span> 再現観戦</button>
+			</div>
+
+			<hr />
+
+			<h4>【クラスＡ 決勝】</h4>
+			<p>いよいよクラスＡの決勝戦です。<br />
+				初戦で長考型の "ネオ爺2" が勝利し、続く２戦目でも２位となり順調に勝ち進んでいくかと思われましたが、
+				３回戦で "峯＆中西" が放った革命によって<strong class="text-danger">大転落</strong>。以降、なかなか勝ちの機会を見いだせず、
+				また３を２枚持っているときになぜか１枚ずつ出してしまって勝利を逃してしまうシーンも見られ、
+				大苦戦となったようです。<br />
+				後半戦は "risa@徹夜" と "Mitchy" が順調に勝ち点を稼ぎ合う進行となり、手に汗握る優勝争いが続きました。<br />
+				最終の第９回戦では、またしてもジョーカーが２枚配られ、大貧民 "ネオ爺2" が初手から革命を仕掛けると
+				"Mitchy" が<strong class="text-danger">革命返し</strong>をするという劇的な展開が見られ、大いに盛り上がりました。<br />
+				実は "Mitchy" は、その直前に４枚出しに対応するためのプログラム修正が即興で行われており、
+				すぐさま実戦での大技披露となりました。
+			</p>
+			<strong>成績表</strong><br />
+			<table class="table table-bordered standings">
+				<tr class="active">
+					<th>対戦者(敬称略、接続順)</th><th>総合得点</th><th>大富豪</th><th>富豪</th><th>平民</th><th>貧民</th><th>大貧民</th>
+				</tr>
+				<tr>
+					<td>峯＆中西 …（峯さんとVinculoさんによる人力）</td>
+					<td>37点</td><td>3回</td><td>4回</td><td>2回</td><td>0回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>ネオ爺2</td>
+					<td>16点</td><td>1回</td><td>1回</td><td>1回</td><td>2回</td><td>4回</td>
+				</tr>
+				<tr>
+					<td>risa@徹夜</td>
+					<td>34点</td><td>2回</td><td>4回</td><td>2回</td><td>1回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>Mitchy</td>
+					<td>30点</td><td>3回</td><td>0回</td><td>3回</td><td>3回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>COM1</td>
+					<td>9点</td><td>0回</td><td>0回</td><td>1回</td><td>3回</td><td>5回</td>
+				</tr>
+			</table>
+			<div class="text-right">
+				<button id="btnA04" class="btn btn-success"><span class="glyphicon glyphicon-eye-open"></span> 再現観戦</button>
+			</div>
+
+			<hr />
+
+			<h4>【クラスＡ エキシビションマッチ】</h4>
+			<p>当初の予定では、本戦終了後エキシビションとして優勝プログラム vs 開発者たちを考えておりましたが、
+				プログラムだけの対戦を行ってみよう、ということになりました。<br />
+				もともと、人間が最低一人参加しないとマスタサーバに対戦開始を指示できない仕様だったのですが、
+				またしても "Mitchy" 開発者の<strong class="text-success">アドリブ対応</strong>によって、マスタサーバに対戦開始指示を送る機能を "Mitchy" に
+				付けていただいたおかげで、プログラムだけの対戦が実現しました。
+				（この辺は普段からハードな開発現場で鍛えられているのか、流石の対応力です。）<br />
+				なお、"Erami" は開発者のスケジュールのため途中退場となっていましたので、代わりに "ネオ爺1" を参戦させて
+				５人対戦としました。（"ネオ爺1" は "ネオ爺2" の簡易思考版です）
+			</p>
+			<p>エキシビションでは、"ネオ爺2" が２回戦３回戦と<strong class="text-danger">革命を連発</strong>し、富豪以上の有利な地位を確保しながら進み、
+				その後を "Mitchy" が正確な打ち筋で着々と追うという展開になりました。<br />
+				"kazufsaf" はここにきて革命時の対応が上手くできていないことが判明し、かなりの苦戦を強いられたようです。<br />
+				本戦で優勝した "risa@徹夜" は手札にツキがなく、なかなか勝機を見いだせないまま後半戦へ。<br />
+				９回戦で "Mitchy" が大富豪となって総合得点35点になり、なんと "ネオ爺2" と<strong class="text-danger">同点</strong>となって最終10回戦へ。<br />
+				10回戦では、派手な展開は特になく地味な戦いとなりましたが、"Mitchy" が "ネオ爺" をおさえて先にあがり、総合39点でトップとなりました。<br />
+			</p>
+			<p>やはり人間が一人いるのといないのとでは展開が全然違ってくるようで、プログラムの打ち筋というか個性のようなものが顕著にみられました。<br />
+				初期手札の運もさることながら、プログラム同士の相性といったものもあるのかもしれません。
+			</p>
+			<strong>成績表</strong><br />
+			<table class="table table-bordered standings">
+				<tr class="active">
+					<th>対戦者(敬称略、接続順)</th><th>総合得点</th><th>大富豪</th><th>富豪</th><th>平民</th><th>貧民</th><th>大貧民</th>
+				</tr>
+				<tr>
+					<td>risa@徹夜</td>
+					<td>23点</td><td>1回</td><td>2回</td><td>0回</td><td>5回</td><td>2回</td>
+				</tr>
+				<tr>
+					<td>Mitchy</td>
+					<td>39点<td>3回</td><td>4回</td><td>2回</td><td>1回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>ネオ爺2</td>
+					<td>38点</td><td>4回</td><td>3回</td><td>2回</td><td>0回</td><td>1回</td>
+				</tr>
+				<tr>
+					<td>kazufsaf</td>
+					<td>12点</td><td>0回</td><td>0回</td><td>2回</td><td>3回</td><td>5回</td>
+				</tr>
+				<tr>
+					<td>ネオ爺1</td>
+					<td>28点</td><td>2回</td><td>1回</td><td>4回</td><td>1回</td><td>2回</td>
+				</tr>
+			</table>
+			<div class="text-right">
+				<button id="btnA06" class="btn btn-success"><span class="glyphicon glyphicon-eye-open"></span> 再現観戦</button>
+			</div>
+
+			<hr />
+
+			<h4>【クラスＢ 試験対戦】</h4>
+			<p>クラスＢは、エントリーが "ネオ爺2" だけだったのですが、"risa@徹夜" 開発者が「なんとかなるんじゃないか」、
+				ということで、せっかくなので少しやってみることになりました。<br />
+				２回戦、４回戦、５回戦で "Office Vinculo" が<strong class="text-danger">階段革命を乱発</strong>し、難解な局面が続きました。
+				やはり人間にはかないませんでしたが、３回戦ではジョーカー待ちの "ネオ爺2" が "ネオ爺02" に革命返しされるなど、
+				面白い展開が楽しめました。<br />
+				５回戦までの試験的な対戦ではありましたが、せっかくなので対戦記録を掲載しておきます。
+				（"risa@徹夜" はクラスＢルール未対応での対戦となっております）
+			</p>
+			<strong>成績表</strong><br />
+			<table class="table table-bordered standings">
+				<tr class="active">
+					<th>対戦者(敬称略、接続順)</th><th>総合得点</th><th>大富豪</th><th>富豪</th><th>平民</th><th>貧民</th><th>大貧民</th>
+				</tr>
+				<tr>
+					<td>ネオ爺2</td>
+					<td>10点</td><td>0回</td><td>1回</td><td>2回</td><td>0回</td><td>2回</td>
+				</tr>
+				<tr>
+					<td>risa@徹夜</td>
+					<td>13点</td><td>1回</td><td>1回</td><td>0回</td><td>2回</td><td>1回</td>
+				</tr>
+				<tr>
+					<td>ネオ爺02</td>
+					<td>17点</td><td>1回</td><td>1回</td><td>2回</td><td>1回</td><td>0回</td>
+				</tr>
+				<tr>
+					<td>Office Vinculo …（Vinculoさんによる人力）</td>
+					<td>19点</td><td>3回</td><td>1回</td><td>0回</td><td>0回</td><td>1回</td>
+				</tr>
+				<tr>
+					<td>COM1</td>
+					<td>11点</td><td>0回</td><td>1回</td><td>1回</td><td>2回</td><td>1回</td>
+				</tr>
+			</table>
+			<div class="text-right">
+				<button id="btnB01" class="btn btn-success"><span class="glyphicon glyphicon-eye-open"></span> 再現観戦</button>
+			</div>
+
+			<hr />
+
+            <h3>参加プログラムの開発者へのアンケート</h3>
+			<table class="table table-bordered questionary">
+				<tr>
+					<th>プログラム名またはニックネーム</th>
+					<td><a href="http://risaiku.net/?p=946" target="_blank">risa@徹夜</a></td>
+				</tr>
+				<tr>
+					<th>プログラミング言語や使用ライブラリ</th>
+					<td>JavaScript</td>
+				</tr>
+				<tr>
+					<th>開発環境</th>
+					<td>Windows 7 + Eclipse + Chrome</td>
+				</tr>
+				<tr>
+					<th>ステップ数</th>
+					<td>約450step</td>
+				</tr>
+				<tr>
+					<th>制作所要時間</th>
+					<td>約8時間</td>
+				</tr>
+				<tr>
+					<th>アルゴリズムの構想や感想など</th>
+					<td>頭の中にあった構想を全て盛り込めなかった。
+						既に出されたカードを認識するところまでは実装できたが、
+						それをもとに、上がれるかどうかを判定するところまでは至らなかった。
+						ヒストリデータの解析を行う処理も実装しようと思ったが、間に合わなかった。
+						次回は、もっと人工知能的なアプローチでアルゴリズムを構成したい。</td>
+				</tr>
+			</table>
+			<table class="table table-bordered questionary">
+				<tr>
+					<th>プログラム名またはニックネーム</th>
+					<td>Mitchy</td>
+				</tr>
+				<tr>
+					<th>プログラミング言語や使用ライブラリ</th>
+					<td>JavaScript</td>
+				</tr>
+				<tr>
+					<th>開発環境</th>
+					<td>Windows 7 + 秀丸 + Chrome</td>
+				</tr>
+				<tr>
+					<th>ステップ数</th>
+					<td>約450step</td>
+				</tr>
+				<tr>
+					<th>制作所要時間</th>
+					<td>約10時間</td>
+				</tr>
+				<tr>
+					<th>アルゴリズムの構想や感想など</th>
+					<td>自分の手札の中から最強のものと、それ以外のカードを分類識別し、
+						何を出せば次の親になれるかを判断しながら行動するようにした。
+						基本的には弱いカードから順に出すようになっている。
+						４枚来た時にバグがあったようで、本戦対戦中にそれに気づいてその場で修正した。
+						すると、決勝最終回で奇跡的な革命返しを打たせることが出来た。</td>
+				</tr>
+			</table>
+			<table class="table table-bordered questionary">
+				<tr>
+					<th>プログラム名またはニックネーム</th>
+					<td>kazufsaf</td>
+				</tr>
+				<tr>
+					<th>プログラミング言語や使用ライブラリ</th>
+					<td>Haskell + aeson + websockets</td>
+				</tr>
+				<tr>
+					<th>開発環境</th>
+					<td>Mac OS + Emacs</td>
+				</tr>
+				<tr>
+					<th>ステップ数</th>
+					<td>約300step</td>
+				</tr>
+				<tr>
+					<th>制作所要時間</th>
+					<td>約10時間</td>
+				</tr>
+				<tr>
+					<th>アルゴリズムの構想や感想など</th>
+					<td>今回はHaskellの習得が自分のテーマでもあった。
+						２割ぐらいの習得率でした。
+						もっと手札の評価を行うようなアルゴリズムを実装したかった。</td>
+				</tr>
+			</table>
+			<table class="table table-bordered questionary">
+				<tr>
+					<th>プログラム名またはニックネーム</th>
+					<td>Erami</td>
+				</tr>
+				<tr>
+					<th>プログラミング言語や使用ライブラリ</th>
+					<td>C# + WebSocket4Net</td>
+				</tr>
+				<tr>
+					<th>開発環境</th>
+					<td>Windows 7 + Visual Studio 2012</td>
+				</tr>
+				<tr>
+					<th>ステップ数</th>
+					<td>約440step</td>
+				</tr>
+				<tr>
+					<th>制作所要時間</th>
+					<td>約8時間</td>
+				</tr>
+				<tr>
+					<th>アルゴリズムの構想や感想など</th>
+					<td>久々にプログラミングをしたので、頭の中で思っていることを実装する事ができなくて苦労しました。
+						既に出ているカードを解析して手札を切るロジックや、ギャンブル的なロジックの構築ができず、
+						ただ間違いなく手札を切ることしかできなかったので、
+						次回開催時は全体の場を見て最適なカードが出せるようなアルゴリズムが組めたらと思う次第です。</td>
+				</tr>
+			</table>
+			<table class="table table-bordered questionary">
+				<tr>
+					<th>プログラム名またはニックネーム</th>
+					<td><a href="https://bitbucket.org/lobin_z0x50/neof5client" target="_blank">ネオ爺2</a></td>
+				</tr>
+				<tr>
+					<th>プログラミング言語や使用ライブラリ</th>
+					<td>C++11 + libwebsockets + picojson.h / Java (Androidアプリ化のため)</td>
+				</tr>
+				<tr>
+					<th>開発環境</th>
+					<td>Ubuntu 13.04 + GVim + gcc4.7 / Android NDK r9 + Eclipse (Androidアプリ化のため)</td>
+				</tr>
+				<tr>
+					<th>ステップ数</th>
+					<td>約2000step (Android部分を除く)</td>
+				</tr>
+				<tr>
+					<th>制作所要時間</th>
+					<td>約50時間</td>
+				</tr>
+				<tr>
+					<th>アルゴリズムの構想や感想など</th>
+					<td>アルゴリズムは以下のような感じ。<br />
+						1. 手札のカードの組み合わせから、出すことが出来る手をすべて列挙する<br />
+						2. 場に出たカードをもとに、流せる手と流せない手に分類する<br />
+						3. 流せる手を出してから流せない手を出す、という組み合わせで手順の木構造を展開し、勝利確定手順がないかを幅優先探索で求める。<br />
+						4. 勝利確定手順が見つからない場合は、一手出した後の残りの手札を評価し、もっともよい評価値になる手を出す。<br />
+						手札の評価は、そのカードより強いカードが何枚残っているか等を得点式で計算しているため、得点が低いほうがよい手札となる。 ジョーカーや必ず流せる手は評価値がマイナスとなるようにし、無駄遣いすると評価値が上がるようにした。
+						また、局面の進行状況に合わせて、カード１枚の評価基準値が変動するようにし、序盤は温存型で、終盤では挑戦的になるようパラメータ調整したが、本戦では様々な対戦相手と状況に対応し切れておらず、まだまだ改善の余地があると思う。<br />
+						感想としては、ハッキリ言って大変でした。（笑<br />
+						とりあえず libwebsockets を Android NDK でビルドする方法が見つからず苦労した。
+						途中、期日までに完成できないんじゃないかと方針転換も検討したが、何とかそれなりの強さになるまでアルゴリズムを作り上げることができて本当に良かった。<br />
+						Androidアプリとしてパッケージングするのは当初からの構想でした。
+						やはり開催元の参加プログラムとあっては、それぐらいの完成度を追求しないと画竜点睛を欠くと思ったからです。
+				</tr>
+			</table>
+			<table class="table table-bordered questionary">
+				<tr>
+					<th>プログラム名またはニックネーム</th>
+					<td>まつ and てら <small>（残念ながら当日不参加）</small></td>
+				</tr>
+				<tr>
+					<th>プログラミング言語や使用ライブラリ</th>
+					<td>JavaScript</td>
+				</tr>
+				<tr>
+					<th>開発環境</th>
+					<td>Windows 7 + Brackets + Chrome</td>
+				</tr>
+				<tr>
+					<th>ステップ数</th>
+					<td>200step</td>
+				</tr>
+				<tr>
+					<th>制作所要時間</th>
+					<td>10時間</td>
+				</tr>
+				<tr>
+					<th>アルゴリズムの構想や感想など</th>
+					<td>二人がかりでしたが、仕事＆体調不良で当日参加出来ず残念でした。<br />
+						触り慣れていないJavascriptだったので四苦八苦しながらの実装になりました。<br />
+						やりたいことの3割程度しか実装できませんでしたがいろいろと勉強になりました。<br />
+						次回は、やりたいことの6割ぐらいまでは詰め込めて、かつ、ちゃんと参加できるようにしたいと思います。
+					</td>
+				</tr>
+			</table>
+        </div>
+    </div>
+    </div>
+</div>
+
+@section Scripts{
+<script type="text/javascript">
+	$(function () {
+		if (!WebSocket) {
+			$('.btn').hide();
+		} else {
+			$('.btn').fadeIn();
+		}
+
+		function watchNewWindow(recordId) {
+			window.open('/home/viewer/' + recordId, '_blank', 'width=800,height=440,scrollbars=auto,resizable=yes');
+		}
+
+		$('#btnA01').click(function () { watchNewWindow('201401_A-01'); });
+		$('#btnA03').click(function () { watchNewWindow('201401_A-03'); });
+		$('#btnA04').click(function () { watchNewWindow('201401_A-04'); });
+		$('#btnA06').click(function () { watchNewWindow('201401_A-06'); });
+		$('#btnB01').click(function () { watchNewWindow('201401_B-01'); });
+	});
+
+</script>
+}

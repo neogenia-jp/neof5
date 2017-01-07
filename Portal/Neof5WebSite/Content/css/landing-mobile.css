@@ -1,0 +1,100 @@
+﻿@charset "utf-8";
+
+/*#landing {
+    height: 1006px;
+}*/
+
+
+#wrapper {
+    background: url("/Content/imgs/paper_mid.png") top repeat-y;
+	background-size: 100% 100%;
+}
+
+#landing .paper {
+	background: none;
+	position: static;
+	text-align: center;
+}
+
+#landing .neof5title {
+	position:static;
+	width: 100%;
+    padding-top: 39%;
+	background-size: 90% auto;
+}
+
+#landing .illust_container {
+    position: absolute;  /* モバイル版のみ */
+	width: 100%;
+}
+
+#landing .mine {
+	position: static;
+	float:left;
+	width: 25%;
+    padding-top: 65%;
+	margin-top: 7%;
+	margin-left: 5%;
+}
+
+#landing .maeda {
+	position: static;
+	float:right;
+	width: 45%;
+    padding-top: 72%;
+	margin-right: 5%;
+	right: 0;
+}
+
+#landing .btn_quickplay {
+    width: 30%;
+    padding-top:30%;
+	right: 10%;
+	bottom: 10%;
+}
+
+#landing .btn_wrapper {
+	clear:both;
+	position: static;
+	width: 95%;
+	margin: 79% auto 0 auto;
+}
+    #landing .btn_wrapper:after {
+        clear: both;
+		content: " ";
+    }
+
+#landing .linkbtn {
+    width: 50%;
+	font-size: 16px;
+	line-height: 2em;
+	float: left;
+}
+
+#landing .texts {
+	clear: both;
+    width: 90%;
+	margin: 0 auto;
+	text-align: left;
+}
+
+#landing .screenshot {
+	width: 50%;
+}
+
+#landing .trophy {
+	width: 40%;
+}
+
+#landing .foot {
+	clear:both;
+	position: static;
+    width: 95%;
+    padding-top: 28%;
+}
+/*#landing .finish {
+        width: 620px;
+        height: 60px;
+    }*/
+
+

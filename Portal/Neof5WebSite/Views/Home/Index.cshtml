@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "ネオ富豪 - 公式サイト";
+}
+@Html.Partial("_HeaderNav")
+<div class="container" id="landing">
+	<div class="paper_header"></div>
+	<div class="paper">
+		<div class="neof5title"></div>
+        <div class="texts">
+			<img src="/Content/imgs/screen.png" class="screenshot"/>
+			<img src="/Content/imgs/trophy.png" class="trophy"/>
+            <p>
+                ネオジニアのモットーは「エンジニア至上主義」。<br />
+                エンジニアたちが、楽しくモノづくりをしていないと、<br />
+                本当に楽しいモノなんて、絶対に生まれないと思ってます。<br />
+            </p>
+            <p>
+                だから、僕たちエンジニアが本気で勝負して楽しめる場を創りたい！<br />
+                と考えて、今回の『ネオ富豪2014』を企画しました。<br />
+                ルールは、みんなにお馴染みのトランプ「大富豪」です。<br />
+                ただし、プレイするのは、ヒトではなくてプログラム。<br />
+                エンジニアが作ったプログラム同士を戦わせます。<br />
+            </p>
+            <p>
+                ここにはもうひとつ、狙いというか、想いがあります。<br />
+                プログラミングの勝負を本気でやったら、どんなもんかな？ ということ。<br />
+                自分自身もそうですが、知り合いのあの人やこの人。<br />
+                まったく見ず知らずの人も含めて、みんなはどんなレベルなんだろう？ と。<br />
+            </p>
+            <p>
+                結果、今回の企画がエンジニア同士の交流の場となって、<br />
+                それぞれが分かり合えるコミュニティになればと考えています。<br />
+                業界、会社の壁や垣根をぶっ壊して、みんなが一緒に楽しめる場にしましょう！<br />
+            </p>
+			<img src="/Content/imgs/finish.png" class="finish" />
+        </div>
+		<div class="illust_container">
+            <div class="maeda"></div>
+            <div class="mine"></div>
+            <a class="btn_quickplay" href="/waitingroom/quickplay"></a>
+		</div>
+            <div class="btn_wrapper">
+                <a class="linkbtn btn_rule" href="/rule">ルール説明</a>
+                <a class="linkbtn btn_spec" href="/spec">プログラム</a>
+                <a class="linkbtn btn_playroom" href="http://@Constants.MASTER_SITE_HOSTPORT()/playroom">プレイルーム</a>
+                <a class="linkbtn btn_entry" href="/results">大会結果</a>
+            </div>
+		<div class="foot"></div>
+	</div>
+</div>
+
+@* Preload Images *@
+<img src="/Content/imgs/btn_play_on.png" style="display:none" />
+<img src="/Content/imgs/btn_rule_on.png" style="display:none" />
+<img src="/Content/imgs/btn_spec_on.png" style="display:none" />
+<img src="/Content/imgs/btn_room_on.png" style="display:none" />
+<img src="/Content/imgs/btn_entry_on.png" style="display:none" />
+
+@section Scripts {
+<script type="text/javascript">
+	$(function () {
+		// FadeIn
+		function fadeInAtLater($element, msec) {
+			$element.hide();
+			setTimeout(function () { $element.fadeIn("slow"); }, msec);
+		}
+
+		fadeInAtLater($('.neof5title'), 400);
+		fadeInAtLater($('.texts'), 400);
+		fadeInAtLater($('.maeda'), 800);
+		fadeInAtLater($('.mine'), 800);
+		fadeInAtLater($('.btn_wrapper'), 1200);
+		fadeInAtLater($('.foot'), 1200);
+
+		// Websocket check 
+		if (WebSocket) {
+			fadeInAtLater($('.btn_quickplay'), 1200);
+		}
+	});
+</script>
+}
+
+@section Css {
+	<link rel="stylesheet" href="/Content/css/landing.css" />
+	<link rel="stylesheet" href="/Content/css/landing-1200.css" media="only screen and (min-width: 1200px)" />
+	<link rel="stylesheet" href="/Content/css/landing-970.css" media="only screen and (min-width: 992px) and (max-width: 1199px)" />
+	<link rel="stylesheet" href="/Content/css/landing-768.css" media="only screen and (min-width: 768px) and (max-width: 991px)" />
+	<link rel="stylesheet" href="/Content/css/landing-mobile.css" media="only screen and (max-width: 767px)" />
+}

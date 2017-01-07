@@ -1,0 +1,74 @@
+﻿@charset "utf-8";
+
+/*#landing {
+    height: 1006px;
+}*/
+
+#landing .paper {
+    width: 970px;
+	background-size: 100% 715px;
+}
+
+#landing .mine {
+    width: 180px;
+    height: 470px;
+    top: 100px;
+    left: -8px;
+}
+
+#landing .neof5title {
+    width: 561px;
+    height: 221px;
+    top: 20px;
+    left: 155px;
+}
+
+#landing .maeda {
+    width: 284px;
+    height: 468px;
+    top: 10px;
+    right: -20px;
+}
+
+#landing .btn_quickplay {
+    width: 153px;
+    height: 152px;
+    top: 353px;
+    right: 70px;
+}
+
+#landing .btn_wrapper {
+    top: 520px;
+    right: 57px;
+}
+
+#landing .linkbtn {
+    width: 173px;
+    height: 30px;
+	font-size: 16px;
+	line-height: 2em;
+}
+
+#landing .texts {
+    width: 528px;
+    padding-top: 240px;
+    margin-left: 175px;
+}
+
+#landing .screenshot {
+    width: 185px;
+}
+
+#landing .trophy {
+    width: 133px;
+}
+
+#landing .foot {
+    width: 885px;
+    height: 249px;
+}
+/*#landing .finish {
+        width: 620px;
+        height: 60px;
+    }*/
+

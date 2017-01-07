@@ -1,0 +1,120 @@
+﻿@charset "utf-8";
+
+/* ---------- landing ---------- */
+.paper {
+    background: url("/Content/imgs/paper.png") top no-repeat;
+	background-size: 100% auto;
+	position: relative;
+}
+
+.mine {
+    background: url("/Content/imgs/mine.png") bottom no-repeat;
+    background-size: 100% auto;
+	position: absolute;
+}
+
+.neof5title {
+    background: url("/Content/imgs/title.png") top no-repeat;
+    background-size: 100% 100%;
+	position: absolute;
+}
+
+.maeda {
+    background: url("/Content/imgs/maeda.png") top no-repeat;
+    background-size: 100% auto;
+	position: absolute;
+}
+.foot {
+	margin-top: 30px;
+    background: url("/Content/imgs/footer.png") bottom no-repeat;
+    background-size: 100% auto;
+}
+
+.btn_quickplay {
+	display: block;
+    background: url("/Content/imgs/btn_play.png") top no-repeat;
+    background-size: 100% 100%;
+	position: absolute;
+}
+    .btn_quickplay:hover, .btn_quickplay:active {
+        background-image: url("/Content/imgs/btn_play_on.png");
+    }
+
+.btn_wrapper {
+	position: absolute;
+}
+.linkbtn {
+    background: url("/Content/imgs/btn_spec.png") center no-repeat;
+    background-size: 100% 100%;
+	/*margin: 5px;*/
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	font-size: 20px;
+	font-weight: 900;
+	line-height: 1.8em;
+	color: white;
+	-webkit-text-shadow: 0px 0px 2px #fff;
+	-moz-text-shadow: 0px 0px 2px #fff;
+	text-shadow: 0px 0px 2px #fff;
+}
+    .linkbtn:hover, .linkbtn:active {
+        color: white;
+        text-decoration: none;
+    }
+
+.btn_rule {
+    background-image: url("/Content/imgs/btn_rule.png");
+}
+    .btn_rule:hover, .btn_rule:active {
+        background-image: url("/Content/imgs/btn_rule_on.png");
+    }
+.btn_spec {
+    background-image: url("/Content/imgs/btn_spec.png");
+}
+    .btn_spec:hover, .btn_spec:active {
+        background-image: url("/Content/imgs/btn_spec_on.png");
+    }
+.btn_playroom {
+    background-image: url("/Content/imgs/btn_room.png");
+}
+    .btn_playroom:hover, .btn_playroom:active {
+        background-image: url("/Content/imgs/btn_room_on.png");
+    }
+.btn_entry {
+    background-image: url("/Content/imgs/btn_entry.png");
+}
+    .btn_entry:hover, .btn_entry:active {
+        background-image: url("/Content/imgs/btn_entry_on.png");
+    }
+
+.texts {
+    color: #0a0000;
+	font-family: monospace;
+	font-size: 12px;
+	font-weight: bold;
+	text-shadow: 0px 0px 1px #65060c;
+	-webkit-text-shadow: 0px 0px 1px #65060c;
+	-moz-text-shadow: 0px 0px 1px #65060c;
+}
+    .texts p {
+        line-height: 1.5em;
+    }
+.screenshot {
+    float: right;
+}
+.trophy {
+	margin-top:20px;
+	clear: both;
+	float: right;
+}
+.finish {
+    /*background: url("/Content/imgs/finish.png") top no-repeat;
+    background-size: 100% 100%;*/
+    width: 99%;
+}
+
+/*#footer {
+    position: absolute;
+    bottom: 0;
+}*/
