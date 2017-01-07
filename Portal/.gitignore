@@ -1,0 +1,9 @@
+.vs
+packages/
+*.suo
+*.user
+
+src/Neof5WebSite/obj
+src/Neof5WebSite/bin
+
+

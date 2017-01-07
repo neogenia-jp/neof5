@@ -1,0 +1,247 @@
+﻿@using Neof5WebSite.ViewComponents
+@{
+    ViewBag.Title = "プログラム仕様";
+}
+@Html.Partial("_HeaderNav")
+
+@section Scripts{
+	<script src="/Content/syntaxhighlighter_3.0.83/shCore.js"></script>
+	<script src="/Content/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+	<script type="text/javascript">SyntaxHighlighter.all();</script>
+}
+@section Css{
+    <link href="/Content/syntaxhighlighter_3.0.83/shCore.css" rel="stylesheet">
+    <link href="/Content/syntaxhighlighter_3.0.83/shThemeDefault.css" rel="stylesheet">
+}
+<div class="container">
+<div class="paper-flex-head"></div>
+<div class="paper-flex-body">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+    <h2>@ViewBag.Title</h2>
+    <h3>概要</h3>
+            <p>
+                コンピュータ大富豪の対戦は、ゲーム進行をつかさどるマスタープログラムと、プレイヤーとなるプログラムが相互に通信することで進行します。
+			マスタープログラムはWebアプリケーションであり、別のWebサイトにホスティングされています。<br />
+                大会参加者は、プレイヤープログラムを作成し、サーバに接続してください。ゲームが始まると、逐一ゲームの進行情況が送られてくるので、自分の手番がまわってきたら応答を返すだけです。
+				プレイヤープログラムの動作プラットフォームや言語等は何でも構いません。
+				<small class="text-warning">ただし通信にはWebSocketを利用しますので、WebSocketライブラリが存在するプラットフォームの方が作りやすいです。</small>
+            </p>
+
+    <h3>接続方法</h3>
+            <p>
+                <strong>接続URL:</strong>
+				<pre>ws://@(await Component.InvokeAsync<MasterSiteHostPortViewComponent>())/play/{A|B}/{RoomID}?name={ProgramName}</pre>
+                WebSocketにて上記URLに接続してください。
+            </p>
+            <ul>
+                <li><code>{A|B}</code>のところは、クラスＡのプログラムなら "A" を、クラスＢのプログラムなら "B" としてください。</li>
+                <li><code>{RoomID}</code>には、対戦が行われる部屋のIDを渡してください。大会当日は、運営本部よりIDの連絡があります。</li>
+                <li><code>{ProgramName}</code>のところは、プログラムの名前をURLエンコードして渡してください。</li>
+                <li class="text-dainger">ホスト名およびポート番号は、大会当日に専用のホストが発表されますので、容易に変更出来るようにしておいて下さい。</li>
+            </ul>
+            例： JavaScript で接続する場合（クラスＡ、RoomID=123）
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+				var s = new WebSocket('ws://@(await Component.InvokeAsync<MasterSiteHostPortViewComponent>())/play/A/123?name=Hogehoge');
+			]]></script>
+
+    <h3>プロトコル概要</h3>
+            <p>
+                WebSocket で接続した後は、ゲームが始まるまで通信はありません。ゲームが始まると、サーバから逐一データが送られてきます。
+				データは JSON 形式で送受信します。1回の送受信データ（1回のOnMessage着信）で1つのメッセージが完結しています。1つのメッセージが複数回に分けて送信されることはありません。<br />
+				<small class="text-muted">WebSocket の OnMessage() では受信データの形式によりバイナリタイプとテキストタイプの2種類が定義されていますが、本プロトコルではテキストタイプの方だけを使用します。</small><br />
+				サーバメッセージの内容は、以下のようなメンバを持っています。
+            </p>
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+	"YourNum": int,                  // 受信者の番号（接続順に0から振られます）
+	"Kind": string,                  // ゲーム内で起こったイベントの種類
+	"Teban": int,                    // 現在の手番（プレイヤー番号）
+	"IsKakumei": bool,               // 革命中かどうか
+	"PlayerInfo": object[],          // 対戦中のプレイヤーの情報
+	"Deck": string,                  // 現在の手札（1枚のカードを2文字で表します）
+	"Ba": string[],                  // 場に出ているカード
+	"Yama": string,                  // 山にあるカード（流れたカード）
+	"History": string[]              // ゲームの初手から現在局面までの手の全履歴
+			]]></script>
+            <p>
+                ゲーム内で何か進展があると、その種類に応じてデータが送られてきますが、すべてに応答する必要はありません。<br />
+				<strong class="text-danger">応答が必要なのは自分の手番が回ってきたときだけです。</strong>
+				それ以外は無視しても構いません。
+            </p>
+
+    <h3>カードの表し方</h3>
+            <p>本プロトコルでは1枚のカードを2文字で表します。1文字目はカードのスート（マークのこと）を表します。</p>
+			<pre>
+クラブ: C
+ハート: H
+ダイヤ: D
+スペード: S </pre>
+			<p>2文字目は、カードの数字を表します。</p>
+			<pre>
+1: A (エース)
+2: 2
+3: 3
+.
+.
+.
+10: 0
+11: J (ジャック)
+12: Q (クイーン)
+13: K (キング) </pre>
+			<p>ジョーカーは特別に"JK"と表します。</p>
+			<pre>ジョーカー: JK </pre>
+			<p>プレイヤーの手札などいった複数枚のカードの組み合わせについては、1枚2文字ずつの表記をスペースで区切って表します。
+				たとえば、4枚のカードの組み合わせ「スペードの５」「ハートの１」「ダイヤの１２」「ジョーカー」を表す場合は以下のようになります。</p>
+			<pre> "S5 HA DQ JK" </pre>
+
+    <h3>メッセージ詳細【サーバメッセージ】</h3>
+            <p>サーバから送られてくるメッセージについて説明します。<br />
+				本プロトコルは、なるべくステートレスに処理できるよう設計されています。
+				すなわち、ゲームの最新状況を把握するために、クライアントは逐一メッセージを受け取って自己の内部状態を更新する必要はありません。
+				（もちろん、それをしても構いません）<br />
+				最後のメッセージ一つだけを解釈すれば、ゲームの最新局面とこれまでの情況がわかるようになっています。<br />
+				ここからはサーバメッセージの完全なサンプルを見ながら、その内容について順に解説していきます。
+            </p>
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+{
+	"YourNum":0,                                // 受信者の番号（接続順に0から振られます）
+	"Kind":"ProcessTurn",                       // ゲーム内で起こったイベントの種類
+	"Teban":0,                                  // 現在の手番（プレイヤー番号）
+	"IsKakumei":false,                          // 革命中かどうか
+	"PlayerInfo":[                              // 対戦中のプレイヤーの情報
+		{"Name":"ExampleProgram","HavingCardCount":11,"Ranking":0,"OrderOfFinish":0},
+		{"Name":"COM1","HavingCardCount":11,"Ranking":0,"OrderOfFinish":0},
+		{"Name":"COM2","HavingCardCount":10,"Ranking":0,"OrderOfFinish":0},
+		{"Name":"COM3","HavingCardCount":9,"Ranking":0,"OrderOfFinish":0},
+		{"Name":"COM4","HavingCardCount":9,"Ranking":0,"OrderOfFinish":0}],
+	"Deck":"D3 H3 D4 S7 H9 D0 SJ CQ SQ DA JK",   // 現在の手札（1枚のカードを2文字で表します）
+	"Ba":["S3","D5","S6"],                       // 場に出ているカード
+	"Yama":"",                                   // 山にあるカード（流れたカード）
+	"History":["2-[S3]","3-[D5]","4-[S6]"]       // ゲームの初手から現在局面までの手の全履歴
+}
+			]]></script>
+			<h5>YourNum:</h5>
+			<p>サーバから割り当てられたプレイヤー番号を表します。接続順に0から振られ、接続中は変更されることはありません。</p>
+			<h5>Kind:</h5>
+			<p>発生したイベントの種類を表します。以下の種類があります。</p>
+            <table class="table table-bordered">
+                <tr class="active">
+                    <th>Kindの値</th>
+                    <th>意味、イベントの内容</th>
+                </tr>
+                <tr>
+                    <td>Start</td>
+                    <td>ゲーム開始</td>
+                </tr>
+                <tr>
+                    <td>CardDistributed</td>
+                    <td>手札のカード（の一部）が配布された</td>
+                </tr>
+                <tr>
+                    <td>CardSwapped</td>
+                    <td>手札のカードが交換された（大富豪⇔大貧民、または富豪⇔貧民）なお、手札の交換は自動的に行われます。</td>
+                </tr>
+                <tr>
+                    <td>Thinking</td>
+                    <td><code>Teban</code>で表すプレイヤーに手番がまわった</td>
+                </tr>
+                <tr>
+                    <td>ProcessTurn</td>
+                    <td>あなたの手番が回ってきた <strong class="text-danger">（このイベントメッセージは応答が必須です）</strong></td>
+                </tr>
+                <tr>
+                    <td>CardsArePut</td>
+                    <td><code>Teban</code>で表すプレイヤーがカードを出した（またはパスした）</td>
+                </tr>
+                <tr>
+                    <td>Kakumei</td>
+                    <td>革命または革命返しがおこった</td>
+                </tr>
+                <tr>
+                    <td>Nagare</td>
+                    <td>流れた</td>
+                </tr>
+                <tr>
+                    <td>Agari</td>
+                    <td><code>Teban</code>で表すプレイヤーが上がった</td>
+                </tr>
+                <tr>
+                    <td>Finish</td>
+                    <td>ゲーム終了</td>
+                </tr>
+                <tr>
+                    <td>Tweet</td>
+                    <td>あるプレイヤーが何かをつぶやいたとき（本来のゲーム進行とは関係のない、演出のためのオプション機能）</td>
+                </tr>
+                <tr>
+                    <td>Exception</td>
+                    <td>例外が発生した場合</td>
+                </tr>
+            </table>
+			<p>上記のうち、"Tweet"と"Exception"のときは、<code>Message</code> メンバが含まれます。それ以外のときは、メッセージサンプルの通りのメンバが必ず含まれます。</p>
+			<h5>Teban:</h5>
+			<p>現在の手番となっているプレイヤー番号を表します。</p>
+			<h5>IsKakumei:</h5>
+			<p>革命中かどうかを表す bool値です。</p>
+			<h5>PlayerInfo:</h5>
+			<p>対戦中のプレイヤーに関する情報が配列でセットされています。
+				一つの要素は（プレイヤー情報）は以下のようなメンバを持つオブジェクトです。</p>
+            <table class="table table-bordered">
+				<tr><td><code>Name</code></td><td>プレイヤー名が格納されています</td></tr>
+				<tr><td><code>HavingCardCount</code></td><td>持っているカードの枚数です。0になるとあがりです</td></tr>
+				<tr><td><code>Ranking</code></td><td>ゲーム開始時の階級です（2:大富豪、1:富豪、0:平民、-1:貧民、-2:大貧民）</td></tr>
+				<tr><td><code>OrderOfFinish</code></td><td>上がった順番です（まだ上がっていない場合は 0）</td></tr>
+			</table>
+			<p>配列の並び順はプレイヤー番号の順であり、途中で変更されることはありません。 </p>
+			<h5>Deck:</h5>
+			<p>プレイヤーの現在の手札を表します。当然ながら他のプレイヤーの手札を見ることはできません。</p>
+			<h5>Ba:</h5>
+			<p>現在場に出ているカードを配列で表します。配列の末尾が最後に出されたカードであり、<code>Kind:"ProcessTurn"</code> の際の応答時には、
+				このカードより強いカードを手札の中から選択することになります</p>
+			<h5>Yama:</h5>
+			<p>山にあるカードを表します。</p>
+			<h5>History:</h5>
+			<p>初手から現在局面までのすべての手の履歴です。一つの手を例えば <code>"2-[S3]"</code> のように表し、2番のプレイヤーがスペードの３を出した、という意味になります。
+				パスをした場合は、<code>"2-PASS"</code> となります。流れた時は <code>"/"</code> で表されます。プレイヤーが上がった時は、 <code>"2-AGARI"</code> と表します。<br />
+				これらを初手から順に配列として格納しています。
+			</p>
+
+            <h3>メッセージ詳細【プレイヤーメッセージ】</h3>
+            <p>プレイヤープログラムから送ることが出来るメッセージは次の2種類です
+            </p>
+
+			<h4>Putメッセージ</h4>
+			<p>サーバからのイベントメッセージ「ProcessTurn」に対する応答として送信する必要があります。
+				手札の中からどのカードを出すかを思考し、そのカードをデータとして送信します。
+				カードのデータは、前述のカード文字列として表現する必要があります。
+				</p><p class="text-danger">
+				なお、応答受付にはタイムリミットがあります。サーバが「ProcessTurn」イベントメッセージを送信してから 10秒以内に応答が受信できない場合、
+				タイムオーバーとなり強制的にパスとなります。
+					</p>
+			<p>
+				また、自分の手番でないときにこのメッセージを送信するとエラーメッセージが返され、受付されません。
+			</p>
+			<strong>メッセージフォーマットサンプル：</strong>
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+{
+	"Kind":"Put",           // メッセージ種別
+	"Cards":"S3 D3"         // 出すカード
+}
+			]]></script>
+
+			<h4>Tweetメッセージ</h4>
+			<p>このメッセージは任意のタイミングで送信することができます。
+				思考の過程で発見したことや、相手の手に対する反応など、プログラムにセリフしゃべらせることが出来ます。
+			対戦中の演出として観戦者を楽しませるようなセリフを組み込んでください！
+			</p>
+			<strong>メッセージフォーマットサンプル：</strong>
+			<script type="syntaxhighlighter" class="brush: js"><![CDATA[
+{
+	"Kind":"Tweet",           // ツイートを表すメッセージ種別
+	"Message":"こんにちわ。"   // メッセージ内容
+}
+			]]></script>
+		</div>
+		</div>
+</div>
+</div>
