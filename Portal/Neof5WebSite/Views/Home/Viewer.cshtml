@@ -1,0 +1,23 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=800,initial-scale=1.0,user-scalable=no" />
+    <title>ネオ富豪レコードビューワ</title>
+    <script src="~/Content/enchantjs/enchant.js"></script>
+    <script src="~/Content/enchantjs/plugins/widget.enchant.js"></script>
+    <script src="~/Content/enchantjs/plugins/ui.enchant.js"></script>
+    <script src="~/Content/jQuery/jquery-1.9.1.min.js"></script>
+    <script src="~/Content/js/viewer.js"></script>
+	<script>
+	</script>
+</head>
+<body style="margin:0">
+	<input type="hidden" id="recordId" value="@ViewBag.RecordId"/>
+	<input type="hidden" id="rounds" value="@ViewBag.Rounds"/>
+    <canvas id="world"></canvas>
+</body>
+</html>
