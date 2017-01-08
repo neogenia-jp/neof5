@@ -5,11 +5,17 @@
 簡単な使い方
 
 ```
-docker build -t neof5portal .
+docker build -t neof5portal --build-arg gmail_passwd='xxxxxxxx' .
 docker run -d -p 5000:80 neof5portal
 ```
 
 これでWebブラウザにて `http://localhost:5000/` にアクセスするとトップページが表示されます。
+
+GMailのパスワードは、Dockerfileの引数です。メール送信機能を使用しない場合は引数を省略しても問題ありません。
+
+```
+docker build -t neof5portal .
+```
 
 ### ASP.NET Core
 
