@@ -36,7 +36,7 @@ namespace Neof5WebSite.Controllers
 ニックネーム：{0}
 メールアドレス：{1}
 参加予定クラス：{2}
-使用予定言語/プラットフォーム」：{3}
+使用予定言語/プラットフォーム：{3}
 
 
 大会開催日1週間前には、当日の予定や対戦方式などの
@@ -52,16 +52,18 @@ namespace Neof5WebSite.Controllers
 
 
             //Mailの作成
-            var msg = new MimeMessage("contact@neogenia.co.jp", inputData.Mailaddr);
-            msg.From.Add(new MailboxAddress("システム管理者", mailTo));
-            msg.Cc.Add(new MailboxAddress("システム管理者", mailTo));
-            msg.Subject = "[ネオ富豪] 申し込みを受け付けました。";
-            msg.Body = new TextPart("Plain") { Text = mailbody };
+            var msg = new MimeMessage()
+            {
+                To = { new MailboxAddress("", inputData.Mailaddr) },
+                From = { new MailboxAddress("システム管理者", mailTo) },
+                Cc = { new MailboxAddress("システム管理者", mailTo) },
+                Subject = "[ネオ富豪] 申し込みを受け付けました。",
+                Body = new TextPart("Plain") { Text = mailbody },
+            };
             try
             {
                 using (var sc = new SmtpClient())
                 {
-                    sc.Send(msg);
                     sc.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
                     sc.AuthenticationMechanisms.Remove("XOAUTH2"); // Must be removed for Gmail SMTP
                     sc.Authenticate(mailTo, passwd);
