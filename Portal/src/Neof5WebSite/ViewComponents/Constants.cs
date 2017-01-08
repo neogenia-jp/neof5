@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -9,12 +10,10 @@ namespace Neof5WebSite.ViewComponents
 {
     public class MasterSiteHostPortViewComponent : ViewComponent
     {
-        public string Invoke() =>
-#if DEBUG
-            HttpContext.Request.Host.Host + ":49368";
-#else
-            "neof5master.azurewebsites.net:80";
-#endif
+        public string Invoke()
+            => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production"
+                ? "neof5master.azurewebsites.net:80"
+                : HttpContext.Request.Host.Host + ":49368";
     }
 
     public class SiteTopUrlViewComponent : ViewComponent
