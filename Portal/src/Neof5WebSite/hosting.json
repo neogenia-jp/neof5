@@ -1,0 +1,9 @@
+﻿{
+  // server.urls : settings for binding urls.
+  // localhost:5000 の場合は、localhost からのアクセスしか受け付けない。
+  // *:5000 とすると、他のホストからもアクセス可能となる
+
+  "server.urls": "http://localhost:5000"
+
+  //"server.urls": "http://*:5000"
+}
