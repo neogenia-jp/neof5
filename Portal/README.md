@@ -5,7 +5,7 @@
 簡単な使い方
 
 ```
-docker build -t neof5portal --build-arg gmail_addr='xxx@gmail.com' gmail_passwd='xxxxxxxx' .
+docker build -t neof5portal --build-arg gmail_addr='xxx@gmail.com' --build-arg gmail_passwd='xxxxxxxx' .
 docker run -d -p 5000:80 neof5portal
 ```
 
@@ -19,7 +19,7 @@ docker build -t neof5portal .
 
 ### ASP.NET Core
 
-バージョン: 1.0.3
+バージョン: 1.0.3 (project json)
 
 ### 説明
 
